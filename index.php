@@ -1,4 +1,56 @@
-<!DOCTYPE html>
+<?php
+
+$config = json_decode(file_get_contents('../lekker.config.json'), true);
+
+function verifyRecaptchaCurl($token, $secretKey, $userIP = null) {
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+
+    $data = [
+        'secret' => $secretKey,
+        'response' => $token
+    ];
+
+    if ($userIP) {
+        $data['remoteip'] = $userIP;
+    }
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (curl_error($ch)) {
+        curl_close($ch);
+        return ['success' => false, 'error' => 'cURL error: ' . curl_error($ch)];
+    }
+
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+        return ['success' => false, 'error' => 'HTTP error: ' . $httpCode];
+    }
+
+    return json_decode($response, true);
+}
+
+if (isset($_GET['token']) && !empty($_GET['token'])) {
+    $json = verifyRecaptchaCurl($_GET['token'], $config['secret_key'], $_SERVER['REMOTE_ADDR']);
+
+    if ($json['success'] === true) {
+        // redirect
+        header('Location: ' . $config['slack_invite_url']);
+        exit;
+    } else {
+        echo 'Unknown error.';
+    }
+} else {
+?><!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -193,8 +245,8 @@
     }
 </style>
 
-<script src="jquery-3.7.1.min.js"></script>
-<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=<?php echo $config['site_key']; ?>"></script>
 
 </head>
 
@@ -215,9 +267,10 @@
     </div>
 
 <!--<a href="#" class="cta-button" onclick="alert('Slack invite link goes here! 🎉')">-->
-<a href="https://join.slack.com/t/lekkertech/shared_invite/zt-37qcvholc-4iHOIliLkw1aL1ha8oDsRw" class="cta-button">
+    <a href="#" class="cta-button">
         Join the Lekker Squad! 🎯
     </a>
+
 
     <div class="tech-stack">
         <p>jQuery • PHP • Vim • Coffee • Biltong</p>
@@ -225,6 +278,7 @@
 </div>
 
 <script>
+
 $(document).ready(function() {
     // Create twinkling stars
     function createStars() {
@@ -281,9 +335,19 @@ $(document).ready(function() {
 
         setTimeout(() => $sparkle.remove(), 1000);
     });
+
+    $('.cta-button').on('click', function(e) {
+        e.preventDefault();
+        grecaptcha.ready(function() {
+            grecaptcha.execute('<?php echo $config['site_key']; ?>', {action: 'submit'}).then(function(token) {
+                window.location.href = 'index.php?token=' + token;
+            });
+        });
+    });
 });
 </script>
 
 </body>
 
-</html>
+</html><?php
+}
