@@ -151,14 +151,23 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     }
 
     .meme-text {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: #fff;
         margin-bottom: 2rem;
         background: rgba(255, 255, 255, 0.1);
-        padding: 1rem;
+        padding: 1.5rem;
         border-radius: 15px;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
+        line-height: 1.6;
+    }
+
+    .meme-text p {
+        margin-bottom: 0.8rem;
+    }
+
+    .meme-text p:last-child {
+        margin-bottom: 0;
     }
 
     .cta-button {
@@ -319,10 +328,48 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     }
 
     @media (max-width: 768px) {
-        h1 { font-size: 2.5rem; }
-        .subtitle { font-size: 1.2rem; }
-        .logo { font-size: 3rem; }
-        .container { padding: 1rem; }
+        h1 { 
+            font-size: 2.2rem; 
+            margin-bottom: 0.8rem;
+        }
+        .subtitle { 
+            font-size: 1.1rem; 
+            margin-bottom: 1.5rem;
+        }
+        .logo { 
+            font-size: 2.5rem; 
+            margin-bottom: 0.8rem;
+        }
+        .container { 
+            padding: 1rem; 
+            justify-content: flex-start;
+            padding-top: 2rem;
+        }
+
+        .meme-text {
+            font-size: 0.95rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meme-text .emoji {
+            font-size: 1.1rem;
+        }
+
+        .cta-button {
+            font-size: 1.1rem;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .tech-stack {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+        }
 
         .tooltip .tooltiptext {
             width: 250px;
@@ -348,9 +395,9 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     <div class="subtitle">Where Code Meets Braai 🔥</div>
 
     <div class="meme-text">
-        <p>💻 "It's not a bug, it's a feature" - Every dev ever</p>
-        <p>🌍 South African tech wizards making magic happen</p>
-        <p>☕ Powered by coffee and good vibes</p>
+        <p>💻&nbsp;&nbsp;<em>"It's not a bug, it's a feature" - Every dev ever</em></p>
+        <p>🌍&nbsp;&nbsp;South African tech wizards making magic happen</p>
+        <p>☕&nbsp;&nbsp;Powered by coffee and good vibes</p>
     </div>
 
 <!--<a href="#" class="cta-button" onclick="alert('Slack invite link goes here! 🎉')">-->
@@ -434,15 +481,15 @@ $(document).ready(function() {
 
     $('.cta-button').on('click', function(e) {
         e.preventDefault();
-        
+
         const $button = $(this);
         const originalText = $button.html();
-        
+
         // Show loading state
         $button.addClass('loading')
             .html('<span class="loading-spinner"></span>Verifying...')
             .prop('disabled', true);
-        
+
         grecaptcha.ready(function() {
             grecaptcha.execute('<?php echo $config['site_key']; ?>', {action: 'submit'}).then(function(token) {
                 window.location.href = 'index.php?token=' + token;
