@@ -487,23 +487,42 @@ $(document).ready(function() {
     // Create floating emojis periodically
     setInterval(createFloatingEmoji, 800);
 
-    // Add some interactive sparkle on click
-    $(document).on('click', function(e) {
+    // Add interactive sparkle on click and touch
+    function createSparkle(x, y) {
+        const sparkleEmojis = ['✨', '⭐', '💫', '🌟'];
+        const randomSparkle = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
+        
         const $sparkle = $('<div>')
             .css({
                 position: 'fixed',
-                left: e.clientX + 'px',
-                top: e.clientY + 'px',
+                left: x + 'px',
+                top: y + 'px',
                 pointerEvents: 'none',
                 fontSize: '2rem',
                 zIndex: '1000',
                 animation: 'float 1s ease-out forwards'
             })
-            .html('✨');
+            .html(randomSparkle);
 
         $('body').append($sparkle);
-
         setTimeout(() => $sparkle.remove(), 1000);
+    }
+
+    // Handle both click and touch events
+    $(document).on('click touchstart', function(e) {
+        e.preventDefault();
+        
+        let x, y;
+        if (e.type === 'touchstart') {
+            const touch = e.originalEvent.touches[0];
+            x = touch.clientX;
+            y = touch.clientY;
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+        
+        createSparkle(x, y);
     });
 
     $('.cta-button').on('click', function(e) {
