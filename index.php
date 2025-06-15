@@ -75,6 +75,25 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         position: relative;
     }
 
+    .parallax-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 120%;
+        height: 120%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 20s ease infinite;
+        z-index: -1;
+        transform: translate(-10%, -10%);
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
     .stars {
         position: fixed;
         top: 0;
@@ -386,6 +405,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 
 <body>
 
+<div class="parallax-bg"></div>
 <div class="stars"></div>
 <div class="floating-emojis"></div>
 
@@ -423,6 +443,13 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <script>
 
 $(document).ready(function() {
+    // Parallax effect for background and stars
+    $(window).on('scroll', function() {
+        const scrollTop = $(this).scrollTop();
+        $('.parallax-bg').css('transform', `translate(-10%, -10%) translateY(${scrollTop * 0.3}px)`);
+        $('.stars').css('transform', `translateY(${scrollTop * 0.2}px)`);
+    });
+
     // Create twinkling stars
     function createStars() {
         const $starsContainer = $('.stars');
