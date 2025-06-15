@@ -59,6 +59,21 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Lekker Tech - Where Code Meets Braai 🔥</title>
+<meta name="description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lekkertech.com/">
+<meta property="og:title" content="Lekker Tech - Where Code Meets Braai 🔥">
+<meta property="og:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<!-- <meta property="og:image" content="https://lekkertech.com/og-image.jpg"> -->
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://lekkertech.com/">
+<meta property="twitter:title" content="Lekker Tech - Where Code Meets Braai 🔥">
+<meta property="twitter:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<!-- <meta property="twitter:image" content="https://lekkertech.com/og-image.jpg"> -->
 
 <style>
     * {
