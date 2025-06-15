@@ -357,9 +357,25 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         opacity: 0.7;
     }
 
+    .code-snippet {
+        position: absolute;
+        font-family: 'Courier New', monospace;
+        font-size: 0.8rem;
+        background: rgba(0, 0, 0, 0.6);
+        color: #88cc88;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        border: 1px solid rgba(136, 204, 136, 0.2);
+        animation: float 8s linear forwards;
+        opacity: 0.5;
+        white-space: nowrap;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
     @keyframes float {
         0% {
-            transform: translateY(100vh) rotate(0deg);
+            transform: translateY(100vh);
             opacity: 0;
         }
         10% {
@@ -369,7 +385,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             opacity: 0.7;
         }
         100% {
-            transform: translateY(-100px) rotate(360deg);
+            transform: translateY(-100px);
             opacity: 0;
         }
     }
@@ -545,6 +561,9 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <script>
 
 $(document).ready(function() {
+    // Track active code snippets to prevent duplicates
+    let activeSnippets = new Set();
+
     // Hide page loader once everything is ready
     $(window).on('load', function() {
         $('.page-loader').addClass('fade-out');
@@ -573,7 +592,7 @@ $(document).ready(function() {
         }
     }
 
-    // Create floating emojis
+    // Create floating emojis and code snippets
     function createFloatingEmoji() {
         const emojis = ['💻', '🚀', '⚡', '🔥', '🎯', '🌟', '💡', '🎨', '🔧', '📱'];
         const $emoji = $('<div>')
@@ -591,11 +610,65 @@ $(document).ready(function() {
         }, 7000);
     }
 
+    function createFloatingCodeSnippet() {
+        const codeSnippets = [
+            'brew install rooibos',
+            'npm install braai-tools',
+            'git commit -m "lekker code"',
+            'sudo apt-get install biltong',
+            'console.log("howzit!");',
+            'import { vibe } from "cape-town"',
+            'const isLekker = true;',
+            'composer require boerewors',
+            'docker run --rm ubuntu-za',
+            'ssh user@jozi-server',
+            'curl durban-api.co.za/waves',
+            'echo "Sharp sharp!"',
+            'kubectl apply -f braai.yaml'
+        ];
+
+        // Filter out snippets that are already active
+        const availableSnippets = codeSnippets.filter(snippet => !activeSnippets.has(snippet));
+        
+        // If no snippets available, skip this cycle
+        if (availableSnippets.length === 0) {
+            return;
+        }
+
+        const selectedSnippet = availableSnippets[Math.floor(Math.random() * availableSnippets.length)];
+        activeSnippets.add(selectedSnippet);
+
+        const animationDuration = Math.random() * 4 + 6; // 6-10 seconds
+        const $snippet = $('<div>')
+            .addClass('code-snippet')
+            .text(selectedSnippet)
+            .css({
+                left: Math.random() * 70 + '%', // Narrower range so text doesn't get cut off
+                animationDuration: animationDuration + 's',
+                transform: `rotate(${(Math.random() - 0.5) * 10}deg)` // Random angle between -5 and +5 degrees
+            });
+
+        $('.floating-emojis').append($snippet);
+
+        // Remove when animation completes (when it reaches the top)
+        $snippet.on('animationend', function() {
+            activeSnippets.delete(selectedSnippet);
+            $(this).remove();
+        });
+
+        // Fallback removal in case animationend doesn't fire
+        setTimeout(() => {
+            activeSnippets.delete(selectedSnippet);
+            $snippet.remove();
+        }, (animationDuration + 1) * 1000);
+    }
+
     // Initialize
     createStars();
 
-    // Create floating emojis periodically
-    setInterval(createFloatingEmoji, 800);
+    // Create floating emojis and code snippets periodically
+    setInterval(createFloatingEmoji, 1000);
+    setInterval(createFloatingCodeSnippet, 4000);
 
     // Add interactive sparkle on click and touch
     function createSparkle(x, y) {
