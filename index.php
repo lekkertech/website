@@ -196,6 +196,32 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         left: 100%;
     }
 
+    .cta-button.loading {
+        background: linear-gradient(45deg, #888, #666);
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    }
+
+    .cta-button.loading::before {
+        display: none;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
     .floating-emojis {
         position: fixed;
         top: 0;
@@ -405,9 +431,23 @@ $(document).ready(function() {
 
     $('.cta-button').on('click', function(e) {
         e.preventDefault();
+        
+        const $button = $(this);
+        const originalText = $button.html();
+        
+        // Show loading state
+        $button.addClass('loading')
+            .html('<span class="loading-spinner"></span>Verifying...')
+            .prop('disabled', true);
+        
         grecaptcha.ready(function() {
             grecaptcha.execute('<?php echo $config['site_key']; ?>', {action: 'submit'}).then(function(token) {
                 window.location.href = 'index.php?token=' + token;
+            }).catch(function(error) {
+                // Reset button on error
+                $button.removeClass('loading')
+                    .html(originalText)
+                    .prop('disabled', false);
             });
         });
     });
