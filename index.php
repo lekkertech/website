@@ -237,11 +237,72 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         opacity: 0.8;
     }
 
+    .copyright {
+        margin-top: 3rem;
+        color: #fff;
+        font-size: 0.8rem;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+    }
+
+    .copyright:hover {
+        opacity: 1;
+    }
+
+    .tooltip {
+        position: relative;
+        cursor: help;
+        border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 300px;
+        background-color: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        text-align: left;
+        border-radius: 10px;
+        padding: 15px;
+        position: absolute;
+        z-index: 1000;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -150px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
     @media (max-width: 768px) {
         h1 { font-size: 2.5rem; }
         .subtitle { font-size: 1.2rem; }
         .logo { font-size: 3rem; }
         .container { padding: 1rem; }
+        
+        .tooltip .tooltiptext {
+            width: 250px;
+            margin-left: -125px;
+            font-size: 0.8rem;
+        }
     }
 </style>
 
@@ -274,6 +335,12 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 
     <div class="tech-stack">
         <p>jQuery • PHP • Vim • Coffee • Biltong</p>
+    </div>
+
+    <div class="copyright">
+        <p>© 2025 Made with 🔥 by <span class="tooltip">Bafana Nakamoto
+            <span class="tooltiptext">Bafana Nakamoto, the lesser-known cousin of Satoshi, moved to Cape Town after a brief stint mining dogecoin in Tokyo. Disillusioned by the noise of the blockchain world, he started Lekker Tech to connect devs over boerewors, bytes, and banter.</span>
+        </span></p>
     </div>
 </div>
 
