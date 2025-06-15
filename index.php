@@ -297,7 +297,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         .subtitle { font-size: 1.2rem; }
         .logo { font-size: 3rem; }
         .container { padding: 1rem; }
-        
+
         .tooltip .tooltiptext {
             width: 250px;
             margin-left: -125px;
@@ -338,7 +338,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     </div>
 
     <div class="copyright">
-        <p>© 2025 Made with 🔥 by <span class="tooltip">Bafana Nakamoto
+        <p>© <?php echo date('Y'); ?> Made with 🔥 by <span class="tooltip">Bafana Nakamoto
             <span class="tooltiptext">Bafana Nakamoto, the lesser-known cousin of Satoshi, moved to Cape Town after a brief stint mining dogecoin in Tokyo. Disillusioned by the noise of the blockchain world, he started Lekker Tech to connect devs over boerewors, bytes, and banter.</span>
         </span></p>
     </div>
