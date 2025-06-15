@@ -149,7 +149,17 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     .logo {
         font-size: 4rem;
         margin-bottom: 1rem;
-        animation: bounce 2s infinite;
+        animation: bounce 2s infinite, glow 3s infinite;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes glow {
+        0%, 100% {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
+        }
+        50% {
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 60px rgba(255, 255, 255, 0.6), 0 0 80px rgba(255, 255, 255, 0.3);
+        }
     }
 
     @keyframes bounce {
