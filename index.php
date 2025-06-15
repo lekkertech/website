@@ -265,6 +265,71 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         to { transform: rotate(360deg); }
     }
 
+    .page-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .page-loader.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .loader-content {
+        text-align: center;
+        color: white;
+    }
+
+    .loader-rocket {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: bounce 1s infinite;
+    }
+
+    .loader-text {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+    .loader-dots {
+        display: inline-block;
+    }
+
+    .loader-dots span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: white;
+        margin: 0 3px;
+        animation: dotPulse 1.4s infinite ease-in-out both;
+    }
+
+    .loader-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .loader-dots span:nth-child(2) { animation-delay: -0.16s; }
+    .loader-dots span:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes dotPulse {
+        0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
     .floating-emojis {
         position: fixed;
         top: 0;
@@ -420,6 +485,18 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 
 <body>
 
+<div class="page-loader">
+    <div class="loader-content">
+        <div class="loader-rocket">🚀</div>
+        <div class="loader-text">Loading lekker vibes</div>
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+
 <div class="parallax-bg"></div>
 <div class="stars"></div>
 <div class="floating-emojis"></div>
@@ -458,6 +535,14 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <script>
 
 $(document).ready(function() {
+    // Hide page loader once everything is ready
+    $(window).on('load', function() {
+        $('.page-loader').addClass('fade-out');
+        setTimeout(() => {
+            $('.page-loader').remove();
+        }, 500);
+    });
+
     // Parallax effect for background and stars
     $(window).on('scroll', function() {
         const scrollTop = $(this).scrollTop();
