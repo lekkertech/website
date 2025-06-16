@@ -531,6 +531,10 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     <div class="logo">🚀</div>
     <h1>LEKKER TECH</h1>
     <div class="subtitle">Where Code Meets Braai 🔥</div>
+    
+    <div class="meme-text" style="margin-bottom: 1rem;">
+        <p>A relaxed space for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
+    </div>
 
     <div class="meme-text">
         <p>💻&nbsp;&nbsp;<em>"It's not a bug, it's a feature" - Every dev ever</em></p>
