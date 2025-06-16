@@ -453,20 +453,20 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     }
 
     @media (max-width: 768px) {
-        h1 { 
-            font-size: 2.2rem; 
+        h1 {
+            font-size: 2.2rem;
             margin-bottom: 0.8rem;
         }
-        .subtitle { 
-            font-size: 1.1rem; 
+        .subtitle {
+            font-size: 1.1rem;
             margin-bottom: 1.5rem;
         }
-        .logo { 
-            font-size: 2.5rem; 
+        .logo {
+            font-size: 2.5rem;
             margin-bottom: 0.8rem;
         }
-        .container { 
-            padding: 1rem; 
+        .container {
+            padding: 1rem;
             justify-content: flex-start;
             padding-top: 2rem;
         }
@@ -531,7 +531,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     <div class="logo">🚀</div>
     <h1>LEKKER TECH</h1>
     <div class="subtitle">Where Code Meets Braai 🔥</div>
-    
+
     <div class="meme-text" style="margin-bottom: 1rem;">
         <p>A relaxed space for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
     </div>
@@ -561,6 +561,8 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
         </p>
     </div>
 </div>
+
+<div style="height: 10vh;"></div>
 
 <script>
 
@@ -633,7 +635,7 @@ $(document).ready(function() {
 
         // Filter out snippets that are already active
         const availableSnippets = codeSnippets.filter(snippet => !activeSnippets.has(snippet));
-        
+
         // If no snippets available, skip this cycle
         if (availableSnippets.length === 0) {
             return;
@@ -678,7 +680,7 @@ $(document).ready(function() {
     function createSparkle(x, y) {
         const sparkleEmojis = ['✨', '⭐', '💫', '🌟'];
         const randomSparkle = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
-        
+
         const $sparkle = $('<div>')
             .css({
                 position: 'fixed',
@@ -701,9 +703,9 @@ $(document).ready(function() {
         if ($(e.target).is('a, button') || $(e.target).closest('a, button').length) {
             return;
         }
-        
+
         e.preventDefault();
-        
+
         let x, y;
         if (e.type === 'touchstart') {
             const touch = e.originalEvent.touches[0];
@@ -713,7 +715,7 @@ $(document).ready(function() {
             x = e.clientX;
             y = e.clientY;
         }
-        
+
         createSparkle(x, y);
     });
 
