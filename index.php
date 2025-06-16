@@ -553,7 +553,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             <span class="tooltiptext">Bafana Nakamoto, the lesser-known cousin of Satoshi, moved to Cape Town after a brief stint mining dogecoin in Tokyo. Disillusioned by the noise of the blockchain world, he started Lekker Tech to connect devs over boerewors, bytes, and banter.</span>
         </span></p>
         <p style="margin-top: 0.5rem; font-size: 0.7rem; opacity: 0.6;">
-            🤖 Pair programmed with <a href="https://claude.ai/code" style="color: rgba(255,255,255,0.8); text-decoration: none;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">Claude Code</a> (it didn't judge my jQuery choice)
+            🤖 Pair programmed with <a href="https://claude.ai/code" style="color: rgba(255,255,255,0.8); text-decoration: none;" target="_blank" rel="noopener noreferrer">Claude Code</a> (it didn't judge my jQuery choice)
         </p>
     </div>
 </div>
@@ -693,6 +693,11 @@ $(document).ready(function() {
 
     // Handle both click and touch events
     $(document).on('click touchstart', function(e) {
+        // Don't prevent default behavior for links and buttons
+        if ($(e.target).is('a, button') || $(e.target).closest('a, button').length) {
+            return;
+        }
+        
         e.preventDefault();
         
         let x, y;
