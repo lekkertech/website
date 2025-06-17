@@ -58,7 +58,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lekker Tech - Where Code Meets Braai 🔥</title>
+<title>Lekker Tech - The Slack Where Code Meets Braai 🔥</title>
 <meta name="description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -69,14 +69,14 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lekkertech.com/">
-<meta property="og:title" content="Lekker Tech - Where Code Meets Braai 🔥">
+<meta property="og:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
 <meta property="og:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
 <!-- <meta property="og:image" content="https://lekkertech.com/og-image.jpg"> -->
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://lekkertech.com/">
-<meta property="twitter:title" content="Lekker Tech - Where Code Meets Braai 🔥">
+<meta property="twitter:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
 <meta property="twitter:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
 <!-- <meta property="twitter:image" content="https://lekkertech.com/og-image.jpg"> -->
 
@@ -591,7 +591,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 <div class="container">
     <div class="logo">🚀</div>
     <h1>LEKKER TECH</h1>
-    <div class="subtitle">💬 The Slack Community Where Code Meets Braai 🔥</div>
+    <div class="subtitle">💬 The Slack Where Code Meets Braai 🔥</div>
 
     <div class="meme-text" style="margin-bottom: 1rem;">
         <p>A relaxed space for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
