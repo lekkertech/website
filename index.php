@@ -403,7 +403,7 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     }
 
     .copyright {
-        margin-top: 3rem;
+        margin-top: 1rem;
         color: #fff;
         font-size: 0.8rem;
         opacity: 0.6;
@@ -455,6 +455,11 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
     .tooltip:hover .tooltiptext {
         visibility: visible;
         opacity: 1;
+    }
+
+    .social-icons a:hover {
+        opacity: 1 !important;
+        transform: translateY(-2px);
     }
 
     @media (max-width: 768px) {
@@ -555,6 +560,12 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
 
     <div class="tech-stack">
         <p>jQuery • PHP • Vim • Coffee • Biltong</p>
+    </div>
+
+    <div class="social-icons" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+        <a href="https://github.com/lekkertech/website" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub" style="vertical-align: middle;" />
+        </a>
     </div>
 
     <div class="copyright">
