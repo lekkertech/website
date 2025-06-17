@@ -512,6 +512,57 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             font-size: 0.8rem;
         }
     }
+
+    @media (max-width: 576px) {
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.6rem;
+        }
+        .subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+        }
+        .logo {
+            font-size: 2rem;
+            margin-bottom: 0.6rem;
+        }
+        .container {
+            padding: 0.8rem;
+            justify-content: flex-start;
+            padding-top: 1.5rem;
+        }
+
+        .meme-text {
+            font-size: 0.85rem;
+            padding: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .meme-text .emoji {
+            font-size: 1rem;
+        }
+
+        .cta-button {
+            font-size: 1rem;
+            padding: 0.7rem 1.2rem;
+        }
+
+        .tech-stack {
+            margin-top: 1.2rem;
+            font-size: 0.7rem;
+        }
+
+        .copyright {
+            margin-top: 1.5rem;
+            font-size: 0.65rem;
+        }
+
+        .tooltip .tooltiptext {
+            width: 200px;
+            margin-left: -100px;
+            font-size: 0.75rem;
+        }
+    }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
