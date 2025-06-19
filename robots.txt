@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lekkertech.org.za/sitemap.xml
