@@ -69,17 +69,17 @@ if ($token !== null) {
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://lekkertech.com/">
+<meta property="og:url" content="https://lekkertech.org.za/">
 <meta property="og:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
 <meta property="og:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
-<!-- <meta property="og:image" content="https://lekkertech.com/og-image.jpg"> -->
+<meta property="og:image" content="https://lekkertech.org.za/lekkertech-preview-og.png">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://lekkertech.com/">
+<meta property="twitter:url" content="https://lekkertech.org.za/">
 <meta property="twitter:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
 <meta property="twitter:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
-<!-- <meta property="twitter:image" content="https://lekkertech.com/og-image.jpg"> -->
+<meta property="twitter:image" content="https://lekkertech.org.za/lekkertech-preview-twitter.png">
 
 <style>
     * {
