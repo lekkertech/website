@@ -39,8 +39,9 @@ function verifyRecaptchaCurl($token, $secretKey, $userIP = null) {
     return json_decode($response, true);
 }
 
-if (isset($_GET['token']) && !empty($_GET['token'])) {
-    $json = verifyRecaptchaCurl($_GET['token'], $config['secret_key'], $_SERVER['REMOTE_ADDR']);
+$token = $_POST['token'] ?? null;
+if ($token !== null) {
+    $json = verifyRecaptchaCurl($token, $config['secret_key'], $_SERVER['REMOTE_ADDR']);
 
     if ($json['success'] === true) {
         // redirect
@@ -799,7 +800,17 @@ $(document).ready(function() {
 
         grecaptcha.ready(function() {
             grecaptcha.execute('<?php echo $config['site_key']; ?>', {action: 'submit'}).then(function(token) {
-                window.location.href = 'index.php?token=' + token;
+                const form = document.createElement('form');
+                form.method = 'POST';
+
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = 'token';
+                tokenInput.value = token;
+                form.appendChild(tokenInput);
+
+                document.body.appendChild(form);
+        form.submit();
             }).catch(function(error) {
                 // Reset button on error
                 $button.removeClass('loading')
