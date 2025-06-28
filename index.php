@@ -62,6 +62,8 @@ if ($token !== null) {
 <title>Lekker Tech - The Slack Where Code Meets Braai 🔥</title>
 <meta name="description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
 
+<link rel="canonical" href="https://lekkertech.org.za/" />
+
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
