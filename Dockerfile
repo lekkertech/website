@@ -26,6 +26,12 @@ WORKDIR /var/www/html
 
 FROM base AS production
 
+# The git SHA the image was built from, passed by the workflow. The site
+# returns it in an X-App-Version header so a deploy can be confirmed from
+# outside. Local builds get "dev".
+ARG APP_VERSION=dev
+ENV APP_VERSION=$APP_VERSION
+
 # Only public/ is served. When this becomes a Laravel app, copy the rest of the
 # tree here as well and run composer install (see dylanbr/aibot for the shape).
 COPY --chown=docker:docker public public

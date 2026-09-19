@@ -5,7 +5,11 @@ $config = [
     'site_key'         => getenv('RECAPTCHA_SITE_KEY') ?: '',
     'secret_key'       => getenv('RECAPTCHA_SECRET_KEY') ?: '',
     'slack_invite_url' => getenv('SLACK_INVITE_URL') ?: '',
+    'app_version'      => getenv('APP_VERSION') ?: 'dev',
 ];
+
+// Which build is serving, on every response. Baked into the image; see Dockerfile.
+header('X-App-Version: ' . $config['app_version']);
 
 // Behind Cloudflare the socket peer is the proxy; the visitor's address is in CF-Connecting-IP.
 $clientIp = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
@@ -34,11 +38,8 @@ function verifyRecaptchaCurl($token, $secretKey, $userIP = null) {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if (curl_error($ch)) {
-        curl_close($ch);
         return ['success' => false, 'error' => 'cURL error: ' . curl_error($ch)];
     }
-
-    curl_close($ch);
 
     if ($httpCode !== 200) {
         return ['success' => false, 'error' => 'HTTP error: ' . $httpCode];
@@ -51,13 +52,19 @@ $token = $_POST['token'] ?? null;
 if ($token !== null) {
     $json = verifyRecaptchaCurl($token, $config['secret_key'], $clientIp);
 
-    if ($json['success'] === true) {
-        // redirect
+    if (($json['success'] ?? false) === true) {
+        if ($config['slack_invite_url'] === '') {
+            error_log('SLACK_INVITE_URL is not set; redirecting nowhere');
+        }
         header('Location: ' . $config['slack_invite_url']);
         exit;
-    } else {
-        echo 'Unknown error.';
     }
+
+    // Google's reply carries "error-codes"; our own failures carry "error".
+    // The visitor gets a generic message; the reason goes to the error log.
+    $reason = $json['error'] ?? implode(',', $json['error-codes'] ?? ['no usable response']);
+    error_log('reCAPTCHA verification failed: ' . $reason);
+    echo 'Unknown error.';
 } else {
 ?><!DOCTYPE html>
 <html lang="en">

@@ -22,6 +22,7 @@ Only `public/` is served. Everything else in the repository is configuration, to
 | `RECAPTCHA_SITE_KEY` | reCAPTCHA v3 site key |
 | `RECAPTCHA_SECRET_KEY` | reCAPTCHA v3 secret key |
 | `SLACK_INVITE_URL` | Where a verified visitor is redirected |
+| `APP_VERSION` | Git SHA baked into the production image at build time, returned as an `X-App-Version` header on every response. Not set by hand; local builds report `dev`. |
 
 The site runs behind Cloudflare, so the visitor's address passed to the reCAPTCHA check is taken from the `CF-Connecting-IP` header when present, falling back to the socket peer.
 
