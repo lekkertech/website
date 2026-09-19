@@ -353,6 +353,10 @@ if ($token !== null) {
         transition: opacity 0.5s ease-out;
     }
 
+    .grecaptcha-badge {
+        z-index: 3;
+    }
+
     .page-loader.fade-out {
         opacity: 0;
         pointer-events: none;
