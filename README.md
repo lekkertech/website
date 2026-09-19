@@ -78,5 +78,15 @@ The image is public, like the repository, and contains only `public/`. If it is 
 | `RECAPTCHA_SITE_KEY` | reCAPTCHA v3 site key |
 | `RECAPTCHA_SECRET_KEY` | reCAPTCHA v3 secret key |
 | `SLACK_INVITE_URL` | Slack invite link |
+| `PROD_SSH_HOST_KEY` | The server's public SSH host key, from `ssh-keyscan -t ed25519 <host>` |
 
-The server's public SSH host key is pinned in the workflow file so a spoofed host cannot receive the secrets. If the server is rebuilt, refresh it with `ssh-keyscan -t ed25519 <host>`.
+The host key is pinned with strict checking so a spoofed host cannot receive the secrets. If the server is rebuilt, refresh that secret.
+
+## Server setup
+
+One-time preparation lives in `deploy/`:
+
+- `deploy/server-setup.sh` creates the unprivileged deploy user in the docker group, installs the deploy public key with SSH restrictions, and copies the nginx vhost into `sites-available` without enabling it. Run it as root on the server.
+- `deploy/nginx/lekkertech.org.za.conf` is the hand-written vhost. It proxies to `127.0.0.1:8801`, and redirects `www` to the apex. It is HTTP only: after enabling it, run `certbot --nginx -d lekkertech.org.za -d www.lekkertech.org.za --redirect` and certbot adds TLS and the HTTPS redirect, then renews it like any other site.
+
+Cutover is enabling that vhost, running certbot, and removing the old web root and its previous nginx configuration.

@@ -20,7 +20,8 @@ changes compatible with that.
 ## Deployment
 
 - Push to `prod` triggers `.github/workflows/build-production-docker-image.yml`: build, push to `ghcr.io/lekkertech/website`, then SSH to the host and `docker compose pull && up -d` in `~/lekkertech`.
-- Secrets and anything identifying the server live in GitHub secrets (listed in README). Never put hostnames or credentials in the repo. The host's public SSH key is pinned in the workflow.
+- Secrets and anything identifying the server live in GitHub secrets (listed in README). Never put hostnames or credentials in the repo. The server's public SSH host key is also a secret, pinned with strict checking.
+- `deploy/` holds the one-time server setup script and the hand-written nginx vhost. The vhost is a plain nginx file, enabled by hand.
 - New env vars: add to `.env`, `.env.example`, the README table, the workflow's write step, and GitHub secrets.
 
 ## Working agreements
