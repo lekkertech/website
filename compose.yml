@@ -1,0 +1,20 @@
+# Local development: builds the image and bind-mounts the source so edits show
+# up without a rebuild. The committed .env supplies working defaults.
+#
+#   docker compose up --build
+#   open http://localhost:8800
+services:
+  app:
+    build:
+      context: .
+      target: base
+    ports:
+      - "8800:80"
+    volumes:
+      - .:/var/www/html
+    env_file: .env
+    environment:
+      TEMPLATE_PHP_INI: development
+      # Pick up edits to PHP files immediately instead of every 2s.
+      PHP_INI_OPCACHE__REVALIDATE_FREQ: 0
+    restart: unless-stopped

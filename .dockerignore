@@ -1,0 +1,6 @@
+# Allowlist: only what the image needs. Keeps .env, .git and scratch files out
+# of a public image; production gets its own .env on the host. Extend this
+# when the app grows beyond public/.
+*
+!public/
+public/.DS_Store

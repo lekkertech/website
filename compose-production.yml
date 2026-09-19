@@ -1,0 +1,16 @@
+# Production. The deploy workflow copies this file to ~/lekkertech/compose.yml
+# on the host and writes .env beside it from GitHub secrets. The app is only
+# published on localhost; nginx on the host proxies lekkertech.org.za to it.
+services:
+  app:
+    image: ghcr.io/lekkertech/website:latest
+    ports:
+      - "127.0.0.1:8801:80"
+    env_file: .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
