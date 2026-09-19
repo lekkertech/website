@@ -59,10 +59,31 @@ if ($token !== null) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lekker Tech - The Slack Where Code Meets Braai 🔥</title>
-<meta name="description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<title>Lekker Tech | South African Tech Slack Community 🔥</title>
+<meta name="description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 
 <link rel="canonical" href="https://lekkertech.org.za/" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9K7PZHF635"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9K7PZHF635');
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Lekker Tech",
+    "url": "https://lekkertech.org.za/",
+    "logo": "https://lekkertech.org.za/android-chrome-512x512.png",
+    "description": "A free Slack community for South African developers and tech workers, at home and abroad.",
+    "areaServed": "ZA",
+    "sameAs": ["https://github.com/lekkertech"]
+}
+</script>
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -73,15 +94,15 @@ if ($token !== null) {
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lekkertech.org.za/">
-<meta property="og:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
-<meta property="og:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<meta property="og:title" content="Lekker Tech | South African Tech Slack Community 🔥">
+<meta property="og:description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 <meta property="og:image" content="https://lekkertech.org.za/lekkertech-preview-og.png">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://lekkertech.org.za/">
-<meta property="twitter:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
-<meta property="twitter:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<meta property="twitter:title" content="Lekker Tech | South African Tech Slack Community 🔥">
+<meta property="twitter:description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 <meta property="twitter:image" content="https://lekkertech.org.za/lekkertech-preview-twitter.png">
 
 <style>
@@ -198,6 +219,7 @@ if ($token !== null) {
 
     .subtitle {
         font-size: 1.5rem;
+        font-weight: normal;
         color: #fff;
         margin-bottom: 2rem;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -569,8 +591,8 @@ if ($token !== null) {
     }
 </style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://www.google.com/recaptcha/api.js?render=<?php echo $config['site_key']; ?>"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script defer src="https://www.google.com/recaptcha/api.js?render=<?php echo $config['site_key']; ?>"></script>
 
 </head>
 
@@ -595,7 +617,7 @@ if ($token !== null) {
 <div class="container">
     <div class="logo">🚀</div>
     <h1>LEKKER TECH</h1>
-    <div class="subtitle">💬 The Slack Where Code Meets Braai 🔥</div>
+    <h2 class="subtitle">💬 The South African Tech Slack Where Code Meets Braai 🔥</h2>
 
     <div class="meme-text" style="margin-bottom: 1rem;">
         <p>A relaxed space for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
@@ -637,17 +659,14 @@ if ($token !== null) {
 
 <script>
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Track active code snippets to prevent duplicates
     let activeSnippets = new Set();
 
-    // Hide page loader once everything is ready
-    $(window).on('load', function() {
-        $('.page-loader').addClass('fade-out');
-        setTimeout(() => {
-            $('.page-loader').remove();
-        }, 500);
-    });
+    $('.page-loader').addClass('fade-out');
+    setTimeout(() => {
+        $('.page-loader').remove();
+    }, 500);
 
     // Parallax effect for background and stars
     $(window).on('scroll', function() {
