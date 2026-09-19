@@ -12,19 +12,9 @@ The site at https://lekkertech.org.za: a single `index.php` that shows the landi
 | `secret_key` | reCAPTCHA v3 secret key |
 | `slack_invite_url` | Where a verified visitor is redirected |
 
-## Links
+## Socials
 
-| Where | URL |
-|---|---|
-| Website | https://lekkertech.org.za |
-| X | https://x.com/LekkerTechSlack |
-| Bluesky | https://bsky.app/profile/lekkertech.bsky.social |
-| LinkedIn | https://www.linkedin.com/company/lekker-tech |
-| Facebook | https://www.facebook.com/lekkertechslack |
-| GitHub | https://github.com/lekkertech |
-| Emojis | https://github.com/lekkertech/emojis |
-
-A new social profile goes in this table, in the Organization `sameAs` list in `index.php`, in the footer icons, and in `llms.txt`.
+See [SOCIALS.md](SOCIALS.md).
 
 ## Search and analytics
 
