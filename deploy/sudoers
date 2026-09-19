@@ -1,0 +1,4 @@
+# The webhook receiver may trigger a deploy, and nothing else. The trailing ""
+# forbids arguments. Installed as /etc/sudoers.d/lekkertech-deploy by
+# deploy/server-setup.sh after a visudo syntax check.
+webhook ALL=(root) NOPASSWD: /usr/local/sbin/lekkertech-deploy ""

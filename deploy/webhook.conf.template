@@ -1,0 +1,59 @@
+[
+  {
+    "id": "deploy",
+    "execute-command": "/usr/bin/sudo",
+    "pass-arguments-to-command": [
+      { "source": "string", "name": "/usr/local/sbin/lekkertech-deploy" }
+    ],
+    "command-working-directory": "/tmp",
+    "include-command-output-in-response": false,
+    "response-message": "deploy queued",
+    "trigger-rule-mismatch-http-response-code": 403,
+    "trigger-rule": {
+      "and": [
+        {
+          "match": {
+            "type": "payload-hmac-sha256",
+            "secret": "__HOOK_SECRET__",
+            "parameter": { "source": "header", "name": "X-Hub-Signature-256" }
+          }
+        },
+        {
+          "or": [
+            {
+              "match": {
+                "type": "value",
+                "value": "package",
+                "parameter": { "source": "header", "name": "X-GitHub-Event" }
+              }
+            },
+            {
+              "match": {
+                "type": "value",
+                "value": "registry_package",
+                "parameter": { "source": "header", "name": "X-GitHub-Event" }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "env",
+    "execute-command": "/usr/local/bin/lekkertech-env-store",
+    "command-working-directory": "/tmp",
+    "pass-file-to-command": [
+      { "source": "payload", "name": "env", "envname": "ENV_FILE", "base64decode": true }
+    ],
+    "include-command-output-in-response": true,
+    "trigger-rule-mismatch-http-response-code": 403,
+    "trigger-rule": {
+      "match": {
+        "type": "payload-hmac-sha256",
+        "secret": "__ENV_SECRET__",
+        "parameter": { "source": "header", "name": "X-Hub-Signature-256" }
+      }
+    }
+  }
+]

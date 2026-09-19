@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Apply a newly delivered environment if there is one, then pull the newest
+# image and restart the container if anything changed.
+#
+# Installed as /usr/local/sbin/lekkertech-deploy, owned by root. The webhook
+# receiver runs it through sudo (see deploy/sudoers); it is equally fine to
+# run by hand as root. Concurrent runs queue on a lock, so a burst of pings
+# becomes a sequence of short no-op pulls rather than a pile-up, and a ping
+# that arrives mid-deploy still gets its own pull afterwards.
+#
+# Output goes to syslog:  journalctl -t lekkertech-deploy
+set -euo pipefail
+
+exec > >(logger -t lekkertech-deploy) 2>&1
+exec 9>/run/lock/lekkertech-deploy.lock
+flock 9
+
+cd /opt/lekkertech
+echo "deploy: start"
+
+# The env hook (lekkertech-env-store) leaves the workflow's .env here.
+PENDING=/var/lib/lekkertech/env.pending
+if [ -f "$PENDING" ]; then
+    install -m 600 -o root -g root "$PENDING" .env
+    rm -f "$PENDING"
+    echo "deploy: applied new environment"
+fi
+
+docker compose pull --quiet
+docker compose up -d --remove-orphans
+docker image prune -f >/dev/null
+echo "deploy: done, running $(docker compose ps --format '{{.Image}} ({{.Status}})' app)"
