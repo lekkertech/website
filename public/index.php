@@ -1,6 +1,14 @@
 <?php
 
-$config = json_decode(file_get_contents('../lekker.config.json'), true);
+// Configuration comes from the environment (see .env.example and README.md).
+$config = [
+    'site_key'         => getenv('RECAPTCHA_SITE_KEY') ?: '',
+    'secret_key'       => getenv('RECAPTCHA_SECRET_KEY') ?: '',
+    'slack_invite_url' => getenv('SLACK_INVITE_URL') ?: '',
+];
+
+// Behind Cloudflare the socket peer is the proxy; the visitor's address is in CF-Connecting-IP.
+$clientIp = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
 
 function verifyRecaptchaCurl($token, $secretKey, $userIP = null) {
     $url = 'https://www.google.com/recaptcha/api/siteverify';
@@ -41,7 +49,7 @@ function verifyRecaptchaCurl($token, $secretKey, $userIP = null) {
 
 $token = $_POST['token'] ?? null;
 if ($token !== null) {
-    $json = verifyRecaptchaCurl($token, $config['secret_key'], $_SERVER['REMOTE_ADDR']);
+    $json = verifyRecaptchaCurl($token, $config['secret_key'], $clientIp);
 
     if ($json['success'] === true) {
         // redirect

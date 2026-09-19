@@ -1,0 +1,21 @@
+name: Delete old packages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 2 * * 1'
+
+jobs:
+  delete-old-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Delete old production images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: website
+          package-type: container
+          min-versions-to-keep: 3
