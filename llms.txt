@@ -1,0 +1,16 @@
+# Lekker Tech
+
+> Lekker Tech is a free Slack community for South African developers and tech workers, wherever they are in the world, to connect, socialise, and support one another. Tagline: "The Slack Where Code Meets Braai".
+
+- Website: https://lekkertech.org.za/
+- Join: the "Join the Lekker Squad!" button on the homepage passes a reCAPTCHA check and redirects to the Slack invite. There is no fee.
+- Audience: South African tech workers at home and abroad.
+
+## Links
+
+- [Homepage](https://lekkertech.org.za/): what the community is and how to join
+- [Website source on GitHub](https://github.com/lekkertech/website): the site is open source
+- [X](https://x.com/LekkerTechSlack): official account
+- [Bluesky](https://bsky.app/profile/lekkertech.bsky.social): official account
+- [LinkedIn](https://www.linkedin.com/company/lekker-tech): official page
+- [Facebook](https://www.facebook.com/lekkertechslack): official page

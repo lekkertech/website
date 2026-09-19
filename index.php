@@ -59,10 +59,31 @@ if ($token !== null) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Lekker Tech - The Slack Where Code Meets Braai 🔥</title>
-<meta name="description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<title>Lekker Tech | South African Tech Slack Community 🔥</title>
+<meta name="description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 
 <link rel="canonical" href="https://lekkertech.org.za/" />
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9K7PZHF635"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9K7PZHF635');
+</script>
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Lekker Tech",
+    "url": "https://lekkertech.org.za/",
+    "logo": "https://lekkertech.org.za/android-chrome-512x512.png",
+    "description": "A free Slack community for South African developers and tech workers, at home and abroad.",
+    "areaServed": "ZA",
+    "sameAs": ["https://github.com/lekkertech", "https://bsky.app/profile/lekkertech.bsky.social", "https://x.com/LekkerTechSlack", "https://www.linkedin.com/company/lekker-tech", "https://www.facebook.com/lekkertechslack"]
+}
+</script>
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -73,15 +94,16 @@ if ($token !== null) {
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lekkertech.org.za/">
-<meta property="og:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
-<meta property="og:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<meta property="og:title" content="Lekker Tech | South African Tech Slack Community 🔥">
+<meta property="og:description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 <meta property="og:image" content="https://lekkertech.org.za/lekkertech-preview-og.png">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@LekkerTechSlack">
 <meta property="twitter:url" content="https://lekkertech.org.za/">
-<meta property="twitter:title" content="Lekker Tech - The Slack Where Code Meets Braai 🔥">
-<meta property="twitter:description" content="Join South African tech wizards making magic happen. Connect with devs over boerewors, bytes, and banter in our lekker community!">
+<meta property="twitter:title" content="Lekker Tech | South African Tech Slack Community 🔥">
+<meta property="twitter:description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 <meta property="twitter:image" content="https://lekkertech.org.za/lekkertech-preview-twitter.png">
 
 <style>
@@ -198,6 +220,7 @@ if ($token !== null) {
 
     .subtitle {
         font-size: 1.5rem;
+        font-weight: normal;
         color: #fff;
         margin-bottom: 2rem;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -213,6 +236,30 @@ if ($token !== null) {
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         line-height: 1.6;
+    }
+
+    .faq {
+        text-align: left;
+        margin-top: 2rem;
+    }
+
+    .faq h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .faq summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .faq details + details {
+        margin-top: 0.8rem;
+    }
+
+    .faq details p {
+        margin-top: 0.4rem;
     }
 
     .meme-text p {
@@ -569,8 +616,8 @@ if ($token !== null) {
     }
 </style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://www.google.com/recaptcha/api.js?render=<?php echo $config['site_key']; ?>"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script defer src="https://www.google.com/recaptcha/api.js?render=<?php echo $config['site_key']; ?>"></script>
 
 </head>
 
@@ -595,7 +642,7 @@ if ($token !== null) {
 <div class="container">
     <div class="logo">🚀</div>
     <h1>LEKKER TECH</h1>
-    <div class="subtitle">💬 The Slack Where Code Meets Braai 🔥</div>
+    <h2 class="subtitle">💬 The South African Tech Slack Where Code Meets Braai 🔥</h2>
 
     <div class="meme-text" style="margin-bottom: 1rem;">
         <p>A relaxed space for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
@@ -613,6 +660,30 @@ if ($token !== null) {
     </a>
 
 
+    <section class="meme-text faq">
+        <h2>Questions</h2>
+        <details>
+            <summary>What is Lekker Tech?</summary>
+            <p>A Slack community for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
+        </details>
+        <details>
+            <summary>Who can join?</summary>
+            <p>South African developers and tech workers, whether they live in South Africa or abroad.</p>
+        </details>
+        <details>
+            <summary>How do I join the Slack?</summary>
+            <p>Click "Join the Lekker Squad!" above. After a quick reCAPTCHA check you are sent to the Slack invite.</p>
+        </details>
+        <details>
+            <summary>Does it cost anything?</summary>
+            <p>No. Joining is free.</p>
+        </details>
+        <details>
+            <summary>Is the website open source?</summary>
+            <p>Yes. The code is on <a href="https://github.com/lekkertech/website" style="color: #fff;">GitHub</a>.</p>
+        </details>
+    </section>
+
     <div class="tech-stack">
         <p>jQuery • PHP • Vim • Coffee • Biltong</p>
     </div>
@@ -620,6 +691,18 @@ if ($token !== null) {
     <div class="social-icons" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
         <a href="https://github.com/lekkertech/website" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
             <img height="24" width="24" src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub" style="vertical-align: middle;" />
+        </a>
+        <a href="https://x.com/LekkerTechSlack" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/x/ffffff" alt="X" style="vertical-align: middle;" />
+        </a>
+        <a href="https://bsky.app/profile/lekkertech.bsky.social" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/bluesky/ffffff" alt="Bluesky" style="vertical-align: middle;" />
+        </a>
+        <a href="https://www.linkedin.com/company/lekker-tech" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.jsdelivr.net/npm/simple-icons@9.21.0/icons/linkedin.svg" alt="LinkedIn" style="vertical-align: middle; filter: invert(1);" />
+        </a>
+        <a href="https://www.facebook.com/lekkertechslack" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/facebook/ffffff" alt="Facebook" style="vertical-align: middle;" />
         </a>
     </div>
 
@@ -637,17 +720,14 @@ if ($token !== null) {
 
 <script>
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Track active code snippets to prevent duplicates
     let activeSnippets = new Set();
 
-    // Hide page loader once everything is ready
-    $(window).on('load', function() {
-        $('.page-loader').addClass('fade-out');
-        setTimeout(() => {
-            $('.page-loader').remove();
-        }, 500);
-    });
+    $('.page-loader').addClass('fade-out');
+    setTimeout(() => {
+        $('.page-loader').remove();
+    }, 500);
 
     // Parallax effect for background and stars
     $(window).on('scroll', function() {
@@ -770,8 +850,7 @@ $(document).ready(function() {
 
     // Handle both click and touch events
     $(document).on('click touchstart', function(e) {
-        // Don't prevent default behavior for links and buttons
-        if ($(e.target).is('a, button') || $(e.target).closest('a, button').length) {
+        if ($(e.target).closest('a, button, summary').length) {
             return;
         }
 
