@@ -81,7 +81,7 @@ if ($token !== null) {
     "logo": "https://lekkertech.org.za/android-chrome-512x512.png",
     "description": "A free Slack community for South African developers and tech workers, at home and abroad.",
     "areaServed": "ZA",
-    "sameAs": ["https://github.com/lekkertech"]
+    "sameAs": ["https://github.com/lekkertech", "https://bsky.app/profile/lekkertech.bsky.social"]
 }
 </script>
 
@@ -235,6 +235,30 @@ if ($token !== null) {
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         line-height: 1.6;
+    }
+
+    .faq {
+        text-align: left;
+        margin-top: 2rem;
+    }
+
+    .faq h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .faq summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .faq details + details {
+        margin-top: 0.8rem;
+    }
+
+    .faq details p {
+        margin-top: 0.4rem;
     }
 
     .meme-text p {
@@ -635,6 +659,30 @@ if ($token !== null) {
     </a>
 
 
+    <section class="meme-text faq">
+        <h2>Questions</h2>
+        <details>
+            <summary>What is Lekker Tech?</summary>
+            <p>A Slack community for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
+        </details>
+        <details>
+            <summary>Who can join?</summary>
+            <p>South African developers and tech workers, whether they live in South Africa or abroad.</p>
+        </details>
+        <details>
+            <summary>How do I join the Slack?</summary>
+            <p>Click "Join the Lekker Squad!" above. After a quick reCAPTCHA check you are sent to the Slack invite.</p>
+        </details>
+        <details>
+            <summary>Does it cost anything?</summary>
+            <p>No. Joining is free.</p>
+        </details>
+        <details>
+            <summary>Is the website open source?</summary>
+            <p>Yes. The code is on <a href="https://github.com/lekkertech/website" style="color: #fff;">GitHub</a>.</p>
+        </details>
+    </section>
+
     <div class="tech-stack">
         <p>jQuery • PHP • Vim • Coffee • Biltong</p>
     </div>
@@ -789,8 +837,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle both click and touch events
     $(document).on('click touchstart', function(e) {
-        // Don't prevent default behavior for links and buttons
-        if ($(e.target).is('a, button') || $(e.target).closest('a, button').length) {
+        if ($(e.target).closest('a, button, summary').length) {
             return;
         }
 
