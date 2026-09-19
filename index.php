@@ -81,7 +81,7 @@ if ($token !== null) {
     "logo": "https://lekkertech.org.za/android-chrome-512x512.png",
     "description": "A free Slack community for South African developers and tech workers, at home and abroad.",
     "areaServed": "ZA",
-    "sameAs": ["https://github.com/lekkertech", "https://bsky.app/profile/lekkertech.bsky.social"]
+    "sameAs": ["https://github.com/lekkertech", "https://bsky.app/profile/lekkertech.bsky.social", "https://x.com/LekkerTechSlack"]
 }
 </script>
 
@@ -100,6 +100,7 @@ if ($token !== null) {
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@LekkerTechSlack">
 <meta property="twitter:url" content="https://lekkertech.org.za/">
 <meta property="twitter:title" content="Lekker Tech | South African Tech Slack Community 🔥">
 <meta property="twitter:description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
@@ -690,6 +691,12 @@ if ($token !== null) {
     <div class="social-icons" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
         <a href="https://github.com/lekkertech/website" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
             <img height="24" width="24" src="https://cdn.simpleicons.org/github/ffffff" alt="GitHub" style="vertical-align: middle;" />
+        </a>
+        <a href="https://x.com/LekkerTechSlack" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/x/ffffff" alt="X" style="vertical-align: middle;" />
+        </a>
+        <a href="https://bsky.app/profile/lekkertech.bsky.social" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/bluesky/ffffff" alt="Bluesky" style="vertical-align: middle;" />
         </a>
     </div>
 

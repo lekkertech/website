@@ -10,4 +10,5 @@
 
 - [Homepage](https://lekkertech.org.za/): what the community is and how to join
 - [Website source on GitHub](https://github.com/lekkertech/website): the site is open source
+- [X](https://x.com/LekkerTechSlack): official account
 - [Bluesky](https://bsky.app/profile/lekkertech.bsky.social): official account
