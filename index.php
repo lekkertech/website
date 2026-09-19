@@ -81,7 +81,7 @@ if ($token !== null) {
     "logo": "https://lekkertech.org.za/android-chrome-512x512.png",
     "description": "A free Slack community for South African developers and tech workers, at home and abroad.",
     "areaServed": "ZA",
-    "sameAs": ["https://github.com/lekkertech", "https://bsky.app/profile/lekkertech.bsky.social", "https://x.com/LekkerTechSlack"]
+    "sameAs": ["https://github.com/lekkertech", "https://bsky.app/profile/lekkertech.bsky.social", "https://x.com/LekkerTechSlack", "https://www.linkedin.com/company/lekker-tech", "https://www.facebook.com/lekkertechslack"]
 }
 </script>
 
@@ -697,6 +697,12 @@ if ($token !== null) {
         </a>
         <a href="https://bsky.app/profile/lekkertech.bsky.social" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
             <img height="24" width="24" src="https://cdn.simpleicons.org/bluesky/ffffff" alt="Bluesky" style="vertical-align: middle;" />
+        </a>
+        <a href="https://www.linkedin.com/company/lekker-tech" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.jsdelivr.net/npm/simple-icons@9.21.0/icons/linkedin.svg" alt="LinkedIn" style="vertical-align: middle; filter: invert(1);" />
+        </a>
+        <a href="https://www.facebook.com/lekkertechslack" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin: 0 10px; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease;">
+            <img height="24" width="24" src="https://cdn.simpleicons.org/facebook/ffffff" alt="Facebook" style="vertical-align: middle;" />
         </a>
     </div>
 

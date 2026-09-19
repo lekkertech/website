@@ -12,3 +12,5 @@
 - [Website source on GitHub](https://github.com/lekkertech/website): the site is open source
 - [X](https://x.com/LekkerTechSlack): official account
 - [Bluesky](https://bsky.app/profile/lekkertech.bsky.social): official account
+- [LinkedIn](https://www.linkedin.com/company/lekker-tech): official page
+- [Facebook](https://www.facebook.com/lekkertechslack): official page
