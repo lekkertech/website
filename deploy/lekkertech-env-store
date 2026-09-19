@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Store the application environment that the build workflow delivers through
+# the env hook at the start of every deploy. Runs as the unprivileged webhook
+# user; the webhook daemon has already verified the signature and written
+# the decoded body to $ENV_FILE. The deploy script, running as root, moves
+# the file into /opt/lekkertech/.env on its next run, which the Packages
+# event triggers a minute or two later once the image is pushed.
+#
+# Installed as /usr/local/bin/lekkertech-env-store.
+set -euo pipefail
+
+: "${ENV_FILE:?no file passed}"
+PENDING=/var/lib/lekkertech/env.pending
+
+# Only KEY=VALUE lines, blanks and comments. Anything else is not an env file.
+if grep -qvE '^([A-Z_][A-Z0-9_]*=.*|#.*)?$' "$ENV_FILE"; then
+    echo "rejected: not an env file" >&2
+    exit 1
+fi
+
+umask 077
+cp "$ENV_FILE" "$PENDING.tmp"
+mv -f "$PENDING.tmp" "$PENDING"
+echo "stored $(grep -c '=' "$ENV_FILE") variables"
