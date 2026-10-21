@@ -15,7 +15,7 @@
 # opcache, zip ...), which is all this site needs. Extra extensions when
 # Laravel arrives are one line in the base stage:
 #   ENV PHP_EXTENSION_PDO_MYSQL=1
-FROM thecodingmachine/php:8.5-v5-slim-apache@sha256:e4f2517120d2bbbaa7e5b73d4ce4a00640f7a4b44b16dfbedf8ecfb19aa00d98 AS base
+FROM thecodingmachine/php:8.5-v5-slim-apache@sha256:6071d033b071fee7036977e4c40573e54790e86e6ff1355ec06eb94d9ab8b2ba AS base
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public \
     TEMPLATE_PHP_INI=production \
