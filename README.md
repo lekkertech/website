@@ -52,7 +52,7 @@ open http://localhost:8800
 
 The source directory is bind-mounted into the container, so edits to anything under `public/` show up on reload without a rebuild. Development builds only the `base` stage of the `Dockerfile` (the upstream image plus settings, no application code), so dev builds stay fast however large the app gets. CI builds the `production` stage, which adds the application on top of the same base.
 
-The upstream image, `thecodingmachine/php:8.5-v5-slim-apache`, is pinned by digest in the `Dockerfile` so the base only changes when someone bumps it on purpose. The comment at the top of the file says how.
+The upstream image is `thecodingmachine/php:8.5-v5-slim-apache` (PHP 8.5 on their v5 image line). Builds pull the latest rebuild of that tag.
 
 With the default `.env`, a POST to `/` with any token redirects to the placeholder invite URL, because Google's test secret always verifies. The reCAPTCHA widget in the browser needs real keys with `localhost` in their allowed domains.
 

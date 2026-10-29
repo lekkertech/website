@@ -6,16 +6,14 @@
 #               as the app grows.
 #   production  base plus the application. CI builds and publishes this.
 #
-# The upstream image is pinned by digest so the base is reproducible until
-# someone bumps it on purpose. To bump: change the tag if needed, then
-#   docker buildx imagetools inspect thecodingmachine/php:<tag> --format '{{.Manifest.Digest}}'
-# and paste the new digest here.
-#
 # The "slim" variant ships only the core extensions (curl, mbstring, openssl,
 # opcache, zip ...), which is all this site needs. Extra extensions when
 # Laravel arrives are one line in the base stage:
 #   ENV PHP_EXTENSION_PDO_MYSQL=1
-FROM thecodingmachine/php:8.5-v5-slim-apache@sha256:6071d033b071fee7036977e4c40573e54790e86e6ff1355ec06eb94d9ab8b2ba AS base
+#
+# The tag pins PHP 8.5 (and the v5 image line); without a digest, each build
+# pulls the latest rebuild of that tag.
+FROM thecodingmachine/php:8.5-v5-slim-apache AS base
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public \
     TEMPLATE_PHP_INI=production \

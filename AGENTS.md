@@ -12,8 +12,7 @@ changes compatible with that.
 
 ## Docker
 
-- `Dockerfile` has two stages: `base` (upstream `thecodingmachine/php:8.5-v5-slim-apache` pinned by digest, plus settings) and `production` (base plus `public/`). Dev builds `base` and bind-mounts source; CI builds `production`. Put extensions and php.ini settings in `base`, application copying in `production`. `.dockerignore` is an allowlist; add to it when the app grows.
-- Do not bump the upstream digest casually; the base is meant to stay stable until deliberately changed.
+- `Dockerfile` has two stages: `base` (upstream `thecodingmachine/php:8.5-v5-slim-apache`, plus settings) and `production` (base plus `public/`). Dev builds `base` and bind-mounts source; CI builds `production`. Put extensions and php.ini settings in `base`, application copying in `production`. `.dockerignore` is an allowlist; add to it when the app grows.
 - `compose.yml` is local development: `docker compose up --build`, then http://localhost:8800. Source is bind-mounted.
 - `compose-production.yml` is what runs on the server, published on `127.0.0.1:8801` behind nginx.
 
