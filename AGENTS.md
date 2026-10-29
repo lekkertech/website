@@ -18,9 +18,9 @@ changes compatible with that.
 
 ## Deployment
 
-- Push to `prod` triggers `.github/workflows/build-production-docker-image.yml`: post the environment to the server's env hook, build, push to `ghcr.io/lekkertech/website`, then poll the live site until its `X-App-Version` header shows the new SHA. GitHub never connects to the server; its secrets can only set the environment and trigger a pull.
-- The server pulls: GHCR's Packages webhook hits `/_hooks/deploy`, nginx proxies it to the `webhook` daemon, which verifies the signature and runs the root-owned deploy script via a single sudo rule. The script applies the delivered environment, then pulls and restarts. See `deploy/` and the README.
-- Never put hostnames or credentials in the repo. The two hook secrets exist only in `/etc/lekkertech/hook-secrets` on the server, the GitHub webhook settings, and the `ENV_HOOK_SECRET` repository secret.
+- Push to `prod` triggers `.github/workflows/build-production-docker-image.yml`: post the environment to the server's env hook, build, push to `ghcr.io/lekkertech/website`, post to the pull hook, then poll the live site until its `X-App-Version` header shows the new SHA. GitHub never connects to the server; its secrets can only set the environment and trigger a pull.
+- The server pulls: the workflow hits `/_hooks/pull`, nginx proxies it to the `webhook` daemon, which verifies the signature and runs the root-owned deploy script via a single sudo rule. The script applies the delivered environment, then pulls and restarts. See `deploy/` and the README.
+- Never put hostnames or credentials in the repo. The two hook secrets exist only in `/etc/lekkertech/hook-secrets` on the server and the `ENV_HOOK_SECRET` / `PULL_HOOK_SECRET` repository secrets.
 - `deploy/` holds the one-time server setup script and everything it installs: deploy script, sudoers rule, webhook config, systemd drop-in, nginx snippets and the hand-written vhost. The setup script is idempotent and never overwrites a live vhost (certbot edits it).
 - New env vars: add to `.env`, `.env.example`, the README tables, the workflow's "Send the environment" step, and GitHub secrets. The next deploy delivers them.
 

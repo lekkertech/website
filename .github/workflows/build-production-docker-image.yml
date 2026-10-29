@@ -1,11 +1,10 @@
 name: Build and deploy production image
 
-# Sends the application environment to the server, then builds the image and
-# pushes it to GHCR. The server does the rest: GHCR's Packages webhook rings
-# its deploy hook, which applies the delivered environment, pulls and
-# restarts (see deploy/). No SSH. The last step watches the live site until
-# it reports the SHA we just built, so a failed deploy shows up here as a
-# red run.
+# Sends the application environment to the server, builds and pushes the
+# image to GHCR, then posts to the server's pull hook so it applies the
+# environment, pulls and restarts (see deploy/). No SSH. The last step
+# watches the live site until it reports the SHA we just built, so a
+# failed deploy shows up here as a red run.
 
 on:
   push:
@@ -26,7 +25,7 @@ jobs:
       packages: write
 
     steps:
-      # Delivered first so it is in place before the Packages event fires.
+      # Delivered first so it is in place before the pull hook runs.
       # The body is signed with the env hook's secret the same way GitHub
       # signs its own deliveries; the daemon rejects anything else.
       - name: Send the environment to the server
@@ -88,8 +87,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # The push above fires GHCR's Packages webhook at the server, which
-      # pulls and restarts. Poll the public site until it serves this SHA.
+      # Same signing pattern as the env hook. The server pulls latest and
+      # restarts; we then poll until the public site serves this SHA.
+      - name: Tell the server to pull
+        env:
+          PULL_HOOK_SECRET: ${{ secrets.PULL_HOOK_SECRET }}
+        run: |
+          body='{}'
+          sig="$(printf '%s' "$body" | openssl dgst -sha256 -hmac "$PULL_HOOK_SECRET" | sed 's/^.* //')"
+          curl -fsS -m 60 -X POST "${SITE_URL}_hooks/pull" \
+            -H 'Content-Type: application/json' \
+            -H "X-Hub-Signature-256: sha256=$sig" \
+            --data "$body"
+          echo
+
       - name: Wait for the site to serve this build
         run: |
           want="${{ github.sha }}"

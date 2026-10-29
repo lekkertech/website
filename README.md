@@ -62,10 +62,9 @@ Pushing to the `prod` branch (or running the workflow by hand) deploys. GitHub n
 
 1. The workflow assembles the application environment from the secrets below and POSTs it to `https://lekkertech.org.za/_hooks/env`, signed with the env hook secret the same way GitHub signs its own webhooks. The server stores it as pending.
 2. The workflow builds the image and pushes it to `ghcr.io/lekkertech/website`, tagged with the commit SHA, a timestamp and `latest`. A weekly workflow deletes old image versions, keeping the last three.
-3. GHCR publishes the image, which fires the repository's **Packages** webhook at `https://lekkertech.org.za/_hooks/deploy`.
-4. nginx rate-limits the `/_hooks/` prefix and proxies it to the `webhook` daemon, which runs unprivileged on loopback. The daemon checks the HMAC signature on every request and rejects anything else with a 403.
-5. On a valid deploy delivery it runs `sudo /usr/local/sbin/lekkertech-deploy`, the one command its sudo rule allows. That root-owned script takes a lock, moves the pending environment into `/opt/lekkertech/.env`, then runs `docker compose pull` and `docker compose up -d`, which recreates the container only when the image or the environment changed. Its output is in `journalctl -t lekkertech-deploy`.
-6. The workflow's last step polls the live site until the `X-App-Version` header reports the SHA it just built, and fails after five minutes if it never does.
+3. The workflow POSTs to `https://lekkertech.org.za/_hooks/pull`, signed with the pull hook secret. nginx rate-limits the `/_hooks/` prefix and proxies it to the `webhook` daemon on loopback, which checks the HMAC and rejects anything else with a 403.
+4. On a valid pull delivery the daemon runs `sudo /usr/local/sbin/lekkertech-deploy`, the one command its sudo rule allows. That root-owned script takes a lock, moves the pending environment into `/opt/lekkertech/.env`, then runs `docker compose pull` and `docker compose up -d`, which recreates the container only when the image or the environment changed. Its output is in `journalctl -t lekkertech-deploy`.
+5. The workflow's last step polls the live site until the `X-App-Version` header reports the SHA it just built, and fails after five minutes if it never does.
 
 Both hooks together can do one thing: set the environment and trigger a pull of `latest`. Nothing in GitHub can reach the server beyond that. Changing a secret is `gh secret set` followed by any deploy. The image carries no configuration. The container listens on `127.0.0.1:8801` only; nginx terminates TLS for `lekkertech.org.za` and proxies to that port.
 
@@ -79,8 +78,7 @@ The image is public, like the repository, and contains only `public/`. If it is 
 | `RECAPTCHA_SECRET_KEY` | reCAPTCHA v3 secret key |
 | `SLACK_INVITE_URL` | Slack invite link |
 | `ENV_HOOK_SECRET` | Signs the environment delivery; printed by the server setup script |
-
-One repository webhook: payload URL `https://lekkertech.org.za/_hooks/deploy`, content type JSON, the deploy hook secret printed by the server setup script, subscribed to the Packages event only. Its initial ping shows as a 403 delivery, because that hook accepts nothing but Packages events.
+| `PULL_HOOK_SECRET` | Signs the pull request; printed by the server setup script |
 
 ## Server setup
 

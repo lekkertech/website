@@ -11,13 +11,12 @@
 #      certbot --nginx -d lekkertech.org.za -d www.lekkertech.org.za --redirect
 # 2. Pull-based deploy: the `webhook` package running unprivileged on
 #    loopback with two hooks (env, which the workflow posts the application
-#    environment to at the start of every deploy; deploy, rung by GHCR's
-#    Packages event once the image is pushed), one sudo rule letting it run the
+#    environment to at the start of every deploy; pull, which the workflow
+#    posts after the image is pushed), one sudo rule letting it run the
 #    root-owned deploy script, the deploy directory under /opt, and the nginx
 #    rate-limit zone and hook location. The two hook secrets are generated
 #    here on first run, kept in /etc/lekkertech/hook-secrets, and printed
-#    once: the deploy one goes into the GitHub webhook, the env one into the
-#    ENV_HOOK_SECRET repository secret.
+#    once: each goes into a repository secret (PULL_HOOK_SECRET, ENV_HOOK_SECRET).
 set -euo pipefail
 
 DOMAIN=lekkertech.org.za
@@ -60,19 +59,21 @@ install -m 440 -o root -g root "$HERE/sudoers" /etc/sudoers.d/lekkertech-deploy
 install -d -m 700 -o "$HOOK_USER" -g "$HOOK_USER" "$PENDING_DIR"
 
 # 2c. Hook secrets: kept in one root-only file, generated when missing.
-#     An /etc/webhook.conf from before this file existed holds the deploy
-#     secret already in use by the GitHub webhook; carry it over.
+#     Older installs called the pull secret HOOK_SECRET; rename in place.
 install -d -m 700 -o root -g root /etc/lekkertech
 touch "$SECRETS_FILE"
 chmod 600 "$SECRETS_FILE"
 NEW_SECRETS=""
-if ! grep -q '^HOOK_SECRET=' "$SECRETS_FILE"; then
+if grep -q '^HOOK_SECRET=' "$SECRETS_FILE" && ! grep -q '^PULL_SECRET=' "$SECRETS_FILE"; then
+    sed -i 's/^HOOK_SECRET=/PULL_SECRET=/' "$SECRETS_FILE"
+fi
+if ! grep -q '^PULL_SECRET=' "$SECRETS_FILE"; then
     carried="$(sed -n 's/.*"secret": *"\([0-9a-f]\{64\}\)".*/\1/p' "$HOOK_CONF" 2>/dev/null | head -n 1)"
     if [ -n "$carried" ]; then
-        printf 'HOOK_SECRET=%s\n' "$carried" >> "$SECRETS_FILE"
+        printf 'PULL_SECRET=%s\n' "$carried" >> "$SECRETS_FILE"
     else
-        printf 'HOOK_SECRET=%s\n' "$(openssl rand -hex 32)" >> "$SECRETS_FILE"
-        NEW_SECRETS="$NEW_SECRETS HOOK_SECRET"
+        printf 'PULL_SECRET=%s\n' "$(openssl rand -hex 32)" >> "$SECRETS_FILE"
+        NEW_SECRETS="$NEW_SECRETS PULL_SECRET"
     fi
 fi
 if ! grep -q '^ENV_SECRET=' "$SECRETS_FILE"; then
@@ -83,7 +84,7 @@ fi
 . "$SECRETS_FILE"
 
 umask 077
-sed -e "s/__HOOK_SECRET__/$HOOK_SECRET/" -e "s/__ENV_SECRET__/$ENV_SECRET/" \
+sed -e "s/__PULL_SECRET__/$PULL_SECRET/" -e "s/__ENV_SECRET__/$ENV_SECRET/" \
     "$HERE/webhook.conf.template" > "$HOOK_CONF.tmp"
 install -m 600 -o "$HOOK_USER" -g "$HOOK_USER" "$HOOK_CONF.tmp" "$HOOK_CONF"
 rm -f "$HOOK_CONF.tmp"
@@ -123,11 +124,11 @@ echo "  hooks:       webhook $(systemctl is-active webhook) on 127.0.0.1:9000, l
 echo "  deploy dir:  $DEPLOY_DIR, .env $ENV_NOTE"
 echo "  secrets:     $SECRETS_FILE"
 case " $NEW_SECRETS " in
-    *" HOOK_SECRET "*)
+    *" PULL_SECRET "*)
         echo
-        echo "  New deploy hook secret (shown once):"
-        echo "    $HOOK_SECRET"
-        echo "  GitHub: Settings > Webhooks > Add: https://$DOMAIN/_hooks/deploy, JSON, this secret, event Packages." ;;
+        echo "  New pull hook secret (shown once):"
+        echo "    $PULL_SECRET"
+        echo "  GitHub: gh secret set PULL_HOOK_SECRET   (paste it). The workflow posts to /_hooks/pull with it." ;;
 esac
 case " $NEW_SECRETS " in
     *" ENV_SECRET "*)

@@ -1,42 +1,20 @@
 [
   {
-    "id": "deploy",
+    "id": "pull",
     "execute-command": "/usr/bin/sudo",
     "pass-arguments-to-command": [
       { "source": "string", "name": "/usr/local/sbin/lekkertech-deploy" }
     ],
     "command-working-directory": "/tmp",
     "include-command-output-in-response": false,
-    "response-message": "deploy queued",
+    "response-message": "pull queued",
     "trigger-rule-mismatch-http-response-code": 403,
     "trigger-rule": {
-      "and": [
-        {
-          "match": {
-            "type": "payload-hmac-sha256",
-            "secret": "__HOOK_SECRET__",
-            "parameter": { "source": "header", "name": "X-Hub-Signature-256" }
-          }
-        },
-        {
-          "or": [
-            {
-              "match": {
-                "type": "value",
-                "value": "package",
-                "parameter": { "source": "header", "name": "X-GitHub-Event" }
-              }
-            },
-            {
-              "match": {
-                "type": "value",
-                "value": "registry_package",
-                "parameter": { "source": "header", "name": "X-GitHub-Event" }
-              }
-            }
-          ]
-        }
-      ]
+      "match": {
+        "type": "payload-hmac-sha256",
+        "secret": "__PULL_SECRET__",
+        "parameter": { "source": "header", "name": "X-Hub-Signature-256" }
+      }
     }
   },
   {
