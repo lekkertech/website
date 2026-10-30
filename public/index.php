@@ -636,7 +636,6 @@ if ($token !== null) {
 </style>
 
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.min.js"></script>
-<script defer src="https://www.google.com/recaptcha/api.js?render=<?php echo $config['site_key']; ?>"></script>
 
 </head>
 
@@ -738,6 +737,20 @@ if ($token !== null) {
 <div style="height: 10vh;"></div>
 
 <script>
+
+const RECAPTCHA_SITE_KEY = '<?php echo $config['site_key']; ?>';
+let recaptchaLoaded = null;
+
+function loadRecaptcha() {
+    recaptchaLoaded = recaptchaLoaded || new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_SITE_KEY;
+        script.onload = () => grecaptcha.ready(resolve);
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+    return recaptchaLoaded;
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Track active code snippets to prevent duplicates
@@ -888,6 +901,8 @@ document.addEventListener('DOMContentLoaded', function() {
         createSparkle(x, y);
     });
 
+    $('.cta-button').one('pointerenter focusin touchstart', loadRecaptcha);
+
     $('.cta-button').on('click', function(e) {
         e.preventDefault();
 
@@ -899,8 +914,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .html('<span class="loading-spinner"></span>Verifying...')
             .prop('disabled', true);
 
-        grecaptcha.ready(function() {
-            grecaptcha.execute('<?php echo $config['site_key']; ?>', {action: 'submit'}).then(function(token) {
+        loadRecaptcha()
+            .then(() => grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'submit'}))
+            .then(function(token) {
                 const form = document.createElement('form');
                 form.method = 'POST';
 
@@ -911,14 +927,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 form.appendChild(tokenInput);
 
                 document.body.appendChild(form);
-        form.submit();
+                form.submit();
             }).catch(function(error) {
-                // Reset button on error
                 $button.removeClass('loading')
                     .html(originalText)
                     .prop('disabled', false);
             });
-        });
     });
 });
 </script>
