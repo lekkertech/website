@@ -39,7 +39,7 @@ See [SOCIALS.md](SOCIALS.md).
 | Bing Webmaster Tools | `https://lekkertech.org.za/` |
 | IndexNow | Key `b5923ca771454a4cb31365e168e43f87`, served from the web root |
 
-`robots.txt` allows search and AI crawlers by name, and `llms.txt` summarises the community for AI assistants. The IndexNow key file proves ownership of the site so Bing accepts instant URL submissions.
+`robots.txt` allows search and AI crawlers by name and declares `Content-Signal: search=yes, ai-train=no, ai-input=yes`, and `llms.txt` summarises the community for AI assistants. The IndexNow key file proves ownership of the site so Bing accepts instant URL submissions.
 
 ## Local development
 
