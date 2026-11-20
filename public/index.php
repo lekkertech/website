@@ -635,7 +635,7 @@ if ($token !== null) {
     }
 </style>
 
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.1.0/jquery.min.js"></script>
 
 </head>
 
