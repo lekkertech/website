@@ -263,7 +263,6 @@ if ($token !== null) {
     body {
         position: relative;
         min-height: 100vh;
-        overflow-x: clip;
         font-family: var(--font-body);
         font-size: 1.0625rem;
         line-height: 1.6;
@@ -806,8 +805,8 @@ if ($token !== null) {
     }
 
     /*
-     * Page loader. Fades as soon as the scripts are ready; the delayed
-     * animation hides it anyway if they never arrive.
+     * Page loader. Fades once jQuery and the page are ready; the delayed
+     * animation hides it anyway if jQuery never arrives.
      */
     .page-loader {
         position: fixed;
@@ -1058,8 +1057,23 @@ if ($token !== null) {
     </footer>
 </main>
 
-
 <script>
+const RECAPTCHA_SITE_KEY = <?php echo json_encode($config['site_key']); ?>;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+// reCAPTCHA is heavy, so it loads on the first hover, focus or tap of the join button.
+let recaptchaLoaded = null;
+function loadRecaptcha() {
+    recaptchaLoaded = recaptchaLoaded || new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_SITE_KEY;
+        script.onload = () => grecaptcha.ready(resolve);
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+    return recaptchaLoaded;
+}
+
 // Starfield: three depth layers on a canvas, drifting with scroll at different
 // speeds. Colours come from the CSS tokens, so the stars dim or brighten with
 // the colour scheme. Plain JS so it starts before jQuery arrives.
@@ -1071,7 +1085,6 @@ if ($token !== null) {
 (function() {
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const darkScheme = matchMedia('(prefers-color-scheme: dark)');
     const start = performance.now();
     let width = 0, height = 0, field = 0, layers = [], colour = {}, frame = 0;
@@ -1223,35 +1236,16 @@ if ($token !== null) {
     reduceMotion.addEventListener('change', run);
     document.addEventListener('visibilitychange', run);
 })();
-</script>
 
-<script>
-
-const RECAPTCHA_SITE_KEY = '<?php echo $config['site_key']; ?>';
-let recaptchaLoaded = null;
-
-function loadRecaptcha() {
-    recaptchaLoaded = recaptchaLoaded || new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_SITE_KEY;
-        script.onload = () => grecaptcha.ready(resolve);
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-    return recaptchaLoaded;
-}
-
+// Everything below needs jQuery, which is deferred, so it waits for DOMContentLoaded.
 document.addEventListener('DOMContentLoaded', function() {
-    $('.page-loader').addClass('fade-out');
-    setTimeout(() => {
-        $('.page-loader').remove();
-    }, 300);
+    const $loader = $('.page-loader').addClass('fade-out');
+    setTimeout(() => $loader.remove(), 300);
 
     // Floating emojis and code snippets: an asteroid field drifting up behind
     // the page. They sit under the content layer, so text and cards always
     // stay on top. None on reduced motion, none while the tab is hidden, and
     // no snippets on phones.
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const $floaters = $('.floating-emojis');
     const emojis = ['💻', '🚀', '⚡', '🔥', '🎯', '🌟', '💡', '🎨', '🔧', '📱'];
     const codeSnippets = [
@@ -1368,13 +1362,14 @@ document.addEventListener('DOMContentLoaded', function() {
     $('.cta-button').on('click', function(e) {
         e.preventDefault();
 
+        // A link can't be disabled, so ignore clicks while a check is running.
         const $button = $(this);
+        if ($button.hasClass('loading')) return;
         const originalText = $button.html();
 
-        // Show loading state
         $button.addClass('loading')
-            .html('<span class="loading-spinner"></span>Verifying...')
-            .prop('disabled', true);
+            .attr('aria-disabled', 'true')
+            .html('<span class="loading-spinner"></span>Verifying...');
 
         loadRecaptcha()
             .then(() => grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'submit'}))
@@ -1390,10 +1385,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 document.body.appendChild(form);
                 form.submit();
-            }).catch(function(error) {
+            }).catch(function() {
                 $button.removeClass('loading')
-                    .html(originalText)
-                    .prop('disabled', false);
+                    .removeAttr('aria-disabled')
+                    .html(originalText);
             });
     });
 });
