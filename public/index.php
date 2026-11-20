@@ -441,15 +441,25 @@ if ($token !== null) {
         to { background-position: -200% 0; }
     }
 
+    /* Two lines, with the emojis flanking the pair. */
     .subtitle {
-        max-width: 30ch;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
         margin: 0 auto 1.1rem;
         font-family: var(--font-display);
         font-weight: 700;
         font-size: clamp(1.2rem, 2.6vw, 1.65rem);
         line-height: 1.25;
         color: var(--ink);
-        text-wrap: balance;
+    }
+
+    .subtitle-emoji {
+        flex: none;
+        font-size: 1.9em;
+        font-weight: 400;
+        line-height: 1;
     }
 
     .lead {
@@ -466,7 +476,7 @@ if ($token !== null) {
         grid-template-columns: repeat(3, 1fr);
         width: 100%;
         max-width: 54rem;
-        margin: 0 auto 1.75rem;
+        margin: 2.25rem auto 0;
         list-style: none;
         text-align: left;
         border-top: 1px solid var(--hair);
@@ -585,12 +595,6 @@ if ($token !== null) {
         to { transform: rotate(360deg); }
     }
 
-    .cta-note {
-        margin-top: 0.85rem;
-        font-size: 0.9rem;
-        color: var(--ink-faint);
-    }
-
     :focus-visible {
         outline: 3px solid var(--focus);
         outline-offset: 3px;
@@ -704,33 +708,29 @@ if ($token !== null) {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.6rem;
+        gap: 0.4rem;
     }
 
+    /* Plain icons with a 44px tap area; they lift and brighten on hover. */
     .social-icons a {
         display: grid;
         place-items: center;
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
+        width: 44px;
+        height: 44px;
         color: var(--ink);
-        background: var(--card);
-        border: 1px solid var(--card-line);
-        transition: transform 0.2s ease, background 0.2s ease;
+        opacity: 0.75;
+        transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
     .social-icons svg {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
     }
 
-    .social-icons a:hover {
-        transform: translateY(-3px);
-        background: var(--card-strong);
-    }
-
+    .social-icons a:hover,
     .social-icons a:focus-visible {
-        border-radius: 50%;
+        opacity: 1;
+        transform: translateY(-2px);
     }
 
     .copyright {
@@ -884,9 +884,13 @@ if ($token !== null) {
         }
 
         .subtitle {
-            max-width: none;
+            gap: 0.5rem;
             margin-bottom: 0.8rem;
             font-size: 1.18rem;
+        }
+
+        .subtitle-emoji {
+            font-size: 1.6em;
         }
 
         .lead {
@@ -895,7 +899,7 @@ if ($token !== null) {
 
         .vibes {
             grid-template-columns: 1fr;
-            margin-bottom: 1.25rem;
+            margin-top: 1.75rem;
         }
 
         .vibes li {
@@ -981,18 +985,17 @@ if ($token !== null) {
     <header class="hero">
         <div class="logo" aria-hidden="true">🚀</div>
         <h1>Lekker Tech</h1>
-        <h2 class="subtitle"><span aria-hidden="true">💬 </span>The South African Tech Slack Where Code Meets Braai<span aria-hidden="true"> 🔥</span></h2>
+        <h2 class="subtitle"><span class="subtitle-emoji" aria-hidden="true">💬</span> <span>The South African Tech Slack <br>Where Code Meets Braai</span> <span class="subtitle-emoji" aria-hidden="true">🔥</span></h2>
 
         <p class="lead">A free Slack community for South African developers and tech workers, at home and abroad. A relaxed space to connect, socialise, and support one another.</p>
+
+        <a href="#" class="cta-button">Join the Lekker Squad <span aria-hidden="true">🎯</span></a>
 
         <ul class="vibes">
             <li><span class="vibe-icon" aria-hidden="true">💻</span> <span><em class="quote">“It's not a bug, it's a feature.”</em> <cite>Every dev, ever</cite></span></li>
             <li><span class="vibe-icon" aria-hidden="true">🌍</span> <span>South African tech wizards making magic happen</span></li>
             <li><span class="vibe-icon" aria-hidden="true">☕</span> <span>Powered by coffee and good vibes</span></li>
         </ul>
-
-        <a href="#" class="cta-button">Join the Lekker Squad <span aria-hidden="true">🎯</span></a>
-        <p class="cta-note">Free to join. A quick reCAPTCHA check, then straight into Slack.</p>
     </header>
 
     <section class="faq" aria-labelledby="faq-heading">
