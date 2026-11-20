@@ -358,6 +358,12 @@ if ($token !== null) {
         backdrop-filter: blur(6px);
     }
 
+    /* Slow devices: skip the blur behind each snippet. */
+    .lite .code-snippet {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
     @keyframes rise {
         0% { transform: translateY(0) rotate(var(--rot, 0deg)); opacity: 0; }
         12% { opacity: var(--float-alpha); }
@@ -434,7 +440,7 @@ if ($token !== null) {
         background-clip: text;
         -webkit-text-fill-color: transparent;
         filter: drop-shadow(0 0 18px var(--title-glow));
-        animation: shimmer 18s linear infinite;
+        animation: shimmer 18s steps(360) infinite; /* 20 repaints a second */
     }
 
     @keyframes shimmer {
@@ -1057,6 +1063,11 @@ if ($token !== null) {
 // Starfield: three depth layers on a canvas, drifting with scroll at different
 // speeds. Colours come from the CSS tokens, so the stars dim or brighten with
 // the colour scheme. Plain JS so it starts before jQuery arrives.
+//
+// Cost: it draws at most 30 times a second and batches stars of similar
+// brightness into one fill. On a slow device (Save-Data, little memory, two
+// cores, or draws that measure slow) it switches to "lite": half the stars at
+// 20fps, and the floaters thin out too (html.lite).
 (function() {
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
@@ -1064,6 +1075,16 @@ if ($token !== null) {
     const darkScheme = matchMedia('(prefers-color-scheme: dark)');
     const start = performance.now();
     let width = 0, height = 0, field = 0, layers = [], colour = {}, frame = 0;
+
+    const connection = navigator.connection || {};
+    let lite = connection.saveData === true
+        || (navigator.deviceMemory || 8) <= 2
+        || (navigator.hardwareConcurrency || 8) <= 2;
+    let fps = lite ? 20 : 30;
+    if (lite) document.documentElement.classList.add('lite');
+
+    // Brightness is drawn in steps, so stars of similar brightness share a fill.
+    const SHADES = 16;
 
     function readColours() {
         const css = getComputedStyle(document.documentElement);
@@ -1112,49 +1133,70 @@ if ($token !== null) {
     }
 
     // A four-point sparkle, used for near stars in light mode.
-    function sparkle(x, y, r) {
+    function sparkle(path, x, y, r) {
         const l = r * 3.2;
-        ctx.beginPath();
-        ctx.moveTo(x, y - l);
-        ctx.quadraticCurveTo(x, y, x + l, y);
-        ctx.quadraticCurveTo(x, y, x, y + l);
-        ctx.quadraticCurveTo(x, y, x - l, y);
-        ctx.quadraticCurveTo(x, y, x, y - l);
-        ctx.fill();
+        path.moveTo(x, y - l);
+        path.quadraticCurveTo(x, y, x + l, y);
+        path.quadraticCurveTo(x, y, x, y + l);
+        path.quadraticCurveTo(x, y, x - l, y);
+        path.quadraticCurveTo(x, y, x, y - l);
+    }
+
+    function dot(path, x, y, r) {
+        path.moveTo(x + r, y);
+        path.arc(x, y, r, 0, Math.PI * 2);
     }
 
     function draw(now) {
         const t = (now - start) / 1000;
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = `rgb(${colour.rgb})`;
+        const shades = Array.from({ length: SHADES + 1 }, () => new Path2D());
+        const shade = alpha => shades[Math.round(Math.min(alpha, 1) * SHADES)];
+
         for (const layer of layers) {
             const offset = scrollY * layer.parallax;
-            for (const star of layer.stars) {
+            const count = lite ? Math.ceil(layer.stars.length / 2) : layer.stars.length;
+            for (let i = 0; i < count; i++) {
+                const star = layer.stars[i];
                 const y = ((star.y - offset) % field + field) % field;
                 if (y > height + 8) continue;
                 const twinkle = reduceMotion.matches ? 1 : 1 - layer.twinkle / 2 + layer.twinkle / 2 * Math.sin(t * star.speed + star.phase);
                 const alpha = colour.alpha * twinkle * layer.alpha;
-                ctx.globalAlpha = alpha;
                 if (layer.near && colour.sparkle) {
-                    sparkle(star.x, y, star.r);
+                    sparkle(shade(alpha), star.x, y, star.r);
                     continue;
                 }
-                ctx.beginPath();
-                ctx.arc(star.x, y, star.r, 0, Math.PI * 2);
-                ctx.fill();
-                if (layer.near) {
-                    ctx.globalAlpha = alpha * 0.12;
-                    ctx.beginPath();
-                    ctx.arc(star.x, y, star.r * 2.4, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+                dot(shade(alpha), star.x, y, star.r);
+                if (layer.near) dot(shade(alpha * 0.12), star.x, y, star.r * 2.4);
             }
         }
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = `rgb(${colour.rgb})`;
+        shades.forEach((path, i) => {
+            if (i === 0) return;
+            ctx.globalAlpha = i / SHADES;
+            ctx.fill(path);
+        });
         ctx.globalAlpha = 1;
     }
 
+    // Draw at most `fps` times a second. The first 60 draws are timed; if they
+    // average over 6ms the device is struggling, so drop to lite.
+    let lastDraw = 0, timed = 0, timeSpent = 0;
     function loop(now) {
-        draw(now);
+        if (now - lastDraw >= 1000 / fps - 2) {
+            lastDraw = now;
+            const before = performance.now();
+            draw(now);
+            if (!lite && timed < 60) {
+                timeSpent += performance.now() - before;
+                if (++timed === 60 && timeSpent / 60 > 6) {
+                    lite = true;
+                    fps = 20;
+                    document.documentElement.classList.add('lite');
+                }
+            }
+        }
         frame = requestAnimationFrame(loop);
     }
 
@@ -1231,6 +1273,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let floatTimers = [];
 
     const isNarrow = () => innerWidth < 720;
+    // Set by the starfield on slow devices.
+    const isLite = () => document.documentElement.classList.contains('lite');
     const pick = list => list[Math.floor(Math.random() * list.length)];
     // A random x (px) that keeps an element of `width` on screen.
     const randomX = width => 8 + Math.random() * Math.max(0, innerWidth - width - 16);
@@ -1294,9 +1338,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!narrow) for (let i = 0; i < 2; i++) spawnSnippet(0.2 + Math.random() * 0.6);
         }
         floatTimers.push(setInterval(() => {
-            if ($floaters.children().length < (isNarrow() ? 3 : 8)) spawnEmoji();
+            const max = (isNarrow() ? 3 : 8) / (isLite() ? 2 : 1);
+            if ($floaters.children().length < max) spawnEmoji();
         }, narrow ? 6000 : 3500));
-        if (!narrow) floatTimers.push(setInterval(() => spawnSnippet(), 8000));
+        if (!narrow) floatTimers.push(setInterval(() => {
+            if (!isLite() || Math.random() < 0.5) spawnSnippet();
+        }, 8000));
     }
 
     startFloaters();
