@@ -10,6 +10,7 @@ Only `public/` is served. Everything else in the repository is configuration, to
 |---|---|
 | `public/index.php` | The whole site |
 | `public/*.png`, `favicon.ico`, `site.webmanifest` | Icons and social preview images |
+| `public/fonts/` | Self-hosted fonts (Google Fonts Latin subsets) and their OFL licences |
 | `public/robots.txt`, `sitemap.xml`, `llms.txt` | Crawler files |
 | `public/b5923ca771454a4cb31365e168e43f87.txt` | IndexNow key (see below) |
 
