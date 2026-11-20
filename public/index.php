@@ -357,6 +357,10 @@ if ($token !== null) {
         backdrop-filter: blur(6px);
     }
 
+    .floating-emojis.paused > * {
+        animation-play-state: paused;
+    }
+
     /* Slow devices: skip the blur behind each snippet. */
     .lite .code-snippet {
         -webkit-backdrop-filter: none;
@@ -793,11 +797,27 @@ if ($token !== null) {
         transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     }
 
+    /* An invisible bridge over the gap, so the pointer can move onto the tooltip. */
+    .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        height: 12px;
+    }
+
     .tooltip:hover .tooltiptext,
     .tooltip:focus-within .tooltiptext {
         opacity: 1;
         visibility: visible;
         transform: translate(-50%, 0);
+    }
+
+    /* Escape hides it until the next hover or focus. */
+    .tooltip.dismissed .tooltiptext {
+        opacity: 0;
+        visibility: hidden;
     }
 
     .grecaptcha-badge {
@@ -1068,7 +1088,12 @@ function loadRecaptcha() {
         const script = document.createElement('script');
         script.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_SITE_KEY;
         script.onload = () => grecaptcha.ready(resolve);
-        script.onerror = reject;
+        script.onerror = () => {
+            // Forget the failure so the next click tries again.
+            script.remove();
+            recaptchaLoaded = null;
+            reject(new Error('reCAPTCHA failed to load'));
+        };
         document.head.appendChild(script);
     });
     return recaptchaLoaded;
@@ -1085,6 +1110,7 @@ function loadRecaptcha() {
 (function() {
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
+    if (!ctx) return; // Decoration only; never let it block the join button.
     const darkScheme = matchMedia('(prefers-color-scheme: dark)');
     const start = performance.now();
     let width = 0, height = 0, field = 0, layers = [], colour = {}, frame = 0;
@@ -1266,7 +1292,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const activeSnippets = new Set();
     let floatTimers = [];
 
-    const isNarrow = () => innerWidth < 720;
+    // Same breakpoint as the CSS; crossing it restarts the timers.
+    const narrowQuery = matchMedia('(max-width: 720px)');
+    const isNarrow = () => narrowQuery.matches;
     // Set by the starfield on slow devices.
     const isLite = () => document.documentElement.classList.contains('lite');
     const pick = list => list[Math.floor(Math.random() * list.length)];
@@ -1321,28 +1349,38 @@ document.addEventListener('DOMContentLoaded', function() {
         floatTimers = [];
     }
 
+    // At most 8 floaters on desktop and 3 on phones, halved in lite mode.
+    const hasRoom = () => $floaters.children().length < (isNarrow() ? 3 : 8) / (isLite() ? 2 : 1);
+
     function startFloaters() {
         stopFloaters();
+        // Hidden tabs freeze the floaters where they are, so they pick up on return.
+        $floaters.toggleClass('paused', document.hidden);
         if (reduceMotion.matches || document.hidden) return;
 
         const narrow = isNarrow();
         // Start a few mid-flight so the sky is never empty on arrival.
         if (!$floaters.children().length) {
-            for (let i = 0; i < (narrow ? 2 : 4); i++) spawnEmoji(0.15 + Math.random() * 0.7);
-            if (!narrow) for (let i = 0; i < 2; i++) spawnSnippet(0.2 + Math.random() * 0.6);
+            for (let i = 0; i < (narrow ? 2 : 4) && hasRoom(); i++) spawnEmoji(0.15 + Math.random() * 0.7);
+            if (!narrow) for (let i = 0; i < 2 && hasRoom(); i++) spawnSnippet(0.2 + Math.random() * 0.6);
         }
         floatTimers.push(setInterval(() => {
-            const max = (isNarrow() ? 3 : 8) / (isLite() ? 2 : 1);
-            if ($floaters.children().length < max) spawnEmoji();
+            if (hasRoom()) spawnEmoji();
         }, narrow ? 6000 : 3500));
         if (!narrow) floatTimers.push(setInterval(() => {
-            if (!isLite() || Math.random() < 0.5) spawnSnippet();
+            if (hasRoom() && (!isLite() || Math.random() < 0.5)) spawnSnippet();
         }, 8000));
     }
 
     startFloaters();
-    reduceMotion.addEventListener('change', startFloaters);
+    narrowQuery.addEventListener('change', startFloaters);
     document.addEventListener('visibilitychange', startFloaters);
+    reduceMotion.addEventListener('change', () => {
+        // Turning on reduced motion cancels animations without animationend,
+        // so clear any sparkles that are mid-flight.
+        $('.sparkle').remove();
+        startFloaters();
+    });
 
     // A sparkle wherever the page is tapped or clicked, away from links and buttons.
     const sparkles = ['✨', '⭐', '💫', '🌟'];
@@ -1357,7 +1395,20 @@ document.addEventListener('DOMContentLoaded', function() {
         $('body').append($sparkle);
     });
 
+    // Escape closes Bafana's tooltip without moving focus (WCAG 1.4.13).
+    const $tooltip = $('.tooltip');
+    $tooltip.on('keydown', e => { if (e.key === 'Escape') $tooltip.addClass('dismissed'); });
+    $tooltip.on('mouseleave focusout', () => $tooltip.removeClass('dismissed'));
+
     $('.cta-button').one('pointerenter focusin touchstart', loadRecaptcha);
+
+    // Coming back with the Back button can restore the page mid-"Verifying...",
+    // so put the button back the way it started.
+    const $cta = $('.cta-button');
+    const ctaHtml = $cta.html();
+    addEventListener('pageshow', e => {
+        if (e.persisted) $cta.removeClass('loading').removeAttr('aria-disabled').html(ctaHtml);
+    });
 
     $('.cta-button').on('click', function(e) {
         e.preventDefault();
@@ -1365,7 +1416,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // A link can't be disabled, so ignore clicks while a check is running.
         const $button = $(this);
         if ($button.hasClass('loading')) return;
-        const originalText = $button.html();
 
         $button.addClass('loading')
             .attr('aria-disabled', 'true')
@@ -1388,7 +1438,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).catch(function() {
                 $button.removeClass('loading')
                     .removeAttr('aria-disabled')
-                    .html(originalText);
+                    .html(ctaHtml);
             });
     });
 });
