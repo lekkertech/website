@@ -1051,7 +1051,7 @@ if ($token !== null) {
         </nav>
 
         <div class="copyright">
-            <p>© <?php echo date('Y'); ?> Made with 🔥 by <span class="tooltip"><button type="button" aria-describedby="bafana">Bafana Nakamoto</button><span class="tooltiptext" role="tooltip" id="bafana">Bafana Nakamoto, the lesser-known cousin of Satoshi, moved to Cape Town after a brief stint mining dogecoin in Tokyo. Disillusioned by the noise of the blockchain world, he started Lekker Tech to connect devs over boerewors, bytes, and banter.</span></span></p>
+            <p>© <?php echo date('Y'); ?> Made with 🔥 by <span class="tooltip"><button type="button" aria-describedby="bafana">Bafana Nakamoto</button> <span class="tooltiptext" role="tooltip" id="bafana">Bafana Nakamoto, the lesser-known cousin of Satoshi, moved to Cape Town after a brief stint mining dogecoin in Tokyo. Disillusioned by the noise of the blockchain world, he started Lekker Tech to connect devs over boerewors, bytes, and banter.</span></span></p>
             <p class="credit">🤖 Pair programmed with <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer">Claude Code</a> (it didn't judge my jQuery choice)</p>
         </div>
     </footer>
