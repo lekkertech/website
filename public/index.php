@@ -199,6 +199,8 @@ if ($token !== null) {
         --cta-shadow: rgba(214, 60, 90, 0.35);
         --focus: #1f1147;
         --star: 255, 255, 255;
+        --star-alpha: 0.9;
+        --star-shape: sparkle;
         --snippet-bg: rgba(255, 255, 255, 0.5);
         --snippet-ink: #2f5d3a;
         --snippet-line: rgba(255, 255, 255, 0.8);
@@ -235,6 +237,8 @@ if ($token !== null) {
             --cta-shadow: rgba(255, 110, 110, 0.25);
             --focus: #ffd36b;
             --star: 236, 230, 255;
+            --star-alpha: 0.85;
+            --star-shape: dot;
             --snippet-bg: rgba(10, 6, 30, 0.55);
             --snippet-ink: #9fdcaa;
             --snippet-line: rgba(159, 220, 170, 0.18);
@@ -316,21 +320,9 @@ if ($token !== null) {
         position: fixed;
         inset: 0;
         z-index: 1;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
-    }
-
-    .star {
-        position: absolute;
-        width: 2px;
-        height: 2px;
-        border-radius: 50%;
-        background: rgb(var(--star));
-        animation: twinkle 4s ease-in-out infinite;
-    }
-
-    @keyframes twinkle {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 1; }
     }
 
     .floating-emojis {
@@ -341,14 +333,19 @@ if ($token !== null) {
         pointer-events: none;
     }
 
-    .emoji {
+    .emoji,
+    .code-snippet {
         position: absolute;
+        bottom: -80px;
+        will-change: transform, opacity;
+        animation: rise var(--dur, 18s) linear forwards;
+    }
+
+    .emoji {
         font-size: 1.75rem;
-        animation: float 6s infinite linear;
     }
 
     .code-snippet {
-        position: absolute;
         padding: 0.35rem 0.6rem;
         font-family: var(--font-mono);
         font-size: 0.78rem;
@@ -359,14 +356,26 @@ if ($token !== null) {
         border-radius: 8px;
         -webkit-backdrop-filter: blur(6px);
         backdrop-filter: blur(6px);
-        animation: float 8s linear forwards;
     }
 
-    @keyframes float {
-        0% { transform: translateY(100vh); opacity: 0; }
-        10% { opacity: var(--float-alpha); }
-        90% { opacity: var(--float-alpha); }
-        100% { transform: translateY(-100px); opacity: 0; }
+    @keyframes rise {
+        0% { transform: translateY(0) rotate(var(--rot, 0deg)); opacity: 0; }
+        12% { opacity: var(--float-alpha); }
+        85% { opacity: var(--float-alpha); }
+        100% { transform: translateY(calc(-100vh - 160px)) rotate(calc(var(--rot, 0deg) * -1)); opacity: 0; }
+    }
+
+    .sparkle {
+        position: fixed;
+        z-index: 20;
+        font-size: 1.6rem;
+        pointer-events: none;
+        animation: pop 0.9s ease-out forwards;
+    }
+
+    @keyframes pop {
+        0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+        100% { transform: translate(-50%, -160%) scale(1.1); opacity: 0; }
     }
 
     /* Layout */
@@ -964,7 +973,7 @@ if ($token !== null) {
 </div>
 
 <div class="sky" aria-hidden="true"></div>
-<div class="stars" aria-hidden="true"></div>
+<canvas id="stars" class="stars" aria-hidden="true"></canvas>
 <div class="floating-emojis" aria-hidden="true"></div>
 
 <main class="wrap">
@@ -1042,6 +1051,136 @@ if ($token !== null) {
 
 
 <script>
+// Starfield: three depth layers on a canvas, drifting with scroll at different
+// speeds. Colours come from the CSS tokens, so the stars dim or brighten with
+// the colour scheme. Plain JS so it starts before jQuery arrives.
+(function() {
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const darkScheme = matchMedia('(prefers-color-scheme: dark)');
+    const start = performance.now();
+    let width = 0, height = 0, field = 0, layers = [], colour = {}, frame = 0;
+
+    function readColours() {
+        const css = getComputedStyle(document.documentElement);
+        colour.rgb = css.getPropertyValue('--star').trim() || '255, 255, 255';
+        colour.alpha = parseFloat(css.getPropertyValue('--star-alpha')) || 0.8;
+        colour.sparkle = css.getPropertyValue('--star-shape').trim() === 'sparkle';
+    }
+
+    // Size the canvas to the viewport. Stars are only scattered again when the
+    // width changes: phones resize the height whenever the URL bar shows or
+    // hides, and the sky should not jump when that happens.
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const widthChanged = innerWidth !== width;
+        width = innerWidth;
+        height = innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        if (widthChanged) scatter();
+    }
+
+    function scatter() {
+        // The field is as tall as the screen, so a taller viewport never shows a gap.
+        field = Math.max(height, screen.height || 0);
+        const density = width * field / 10000;
+        // Far, mid and near: count, radius range, scroll speed, twinkle depth.
+        const specs = [
+            { count: density * 1.1, radius: [0.5, 1], parallax: 0.04, twinkle: 0.25, alpha: 0.55 },
+            { count: density * 0.45, radius: [0.9, 1.6], parallax: 0.12, twinkle: 0.5, alpha: 0.8 },
+            { count: density * 0.12, radius: [1.6, 2.6], parallax: 0.24, twinkle: 0.8, alpha: 1, near: true },
+        ];
+        layers = specs.map(spec => {
+            const stars = [];
+            for (let i = 0; i < spec.count; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * field,
+                    r: spec.radius[0] + Math.random() * (spec.radius[1] - spec.radius[0]),
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.4 + Math.random() * 1.1,
+                });
+            }
+            return { ...spec, stars };
+        });
+    }
+
+    // A four-point sparkle, used for near stars in light mode.
+    function sparkle(x, y, r) {
+        const l = r * 3.2;
+        ctx.beginPath();
+        ctx.moveTo(x, y - l);
+        ctx.quadraticCurveTo(x, y, x + l, y);
+        ctx.quadraticCurveTo(x, y, x, y + l);
+        ctx.quadraticCurveTo(x, y, x - l, y);
+        ctx.quadraticCurveTo(x, y, x, y - l);
+        ctx.fill();
+    }
+
+    function draw(now) {
+        const t = (now - start) / 1000;
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = `rgb(${colour.rgb})`;
+        for (const layer of layers) {
+            const offset = scrollY * layer.parallax;
+            for (const star of layer.stars) {
+                const y = ((star.y - offset) % field + field) % field;
+                if (y > height + 8) continue;
+                const twinkle = reduceMotion.matches ? 1 : 1 - layer.twinkle / 2 + layer.twinkle / 2 * Math.sin(t * star.speed + star.phase);
+                const alpha = colour.alpha * twinkle * layer.alpha;
+                ctx.globalAlpha = alpha;
+                if (layer.near && colour.sparkle) {
+                    sparkle(star.x, y, star.r);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(star.x, y, star.r, 0, Math.PI * 2);
+                ctx.fill();
+                if (layer.near) {
+                    ctx.globalAlpha = alpha * 0.12;
+                    ctx.beginPath();
+                    ctx.arc(star.x, y, star.r * 2.4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+        ctx.globalAlpha = 1;
+    }
+
+    function loop(now) {
+        draw(now);
+        frame = requestAnimationFrame(loop);
+    }
+
+    // Reduced motion: no twinkle, redraw only when scrolling.
+    function drawStill() {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => draw(start));
+    }
+
+    function run() {
+        cancelAnimationFrame(frame);
+        if (document.hidden) return;
+        if (reduceMotion.matches) drawStill();
+        else frame = requestAnimationFrame(loop);
+    }
+
+    readColours();
+    resize();
+    run();
+
+    addEventListener('resize', () => { resize(); if (reduceMotion.matches) drawStill(); });
+    addEventListener('scroll', () => { if (reduceMotion.matches) drawStill(); }, { passive: true });
+    darkScheme.addEventListener('change', () => { readColours(); if (reduceMotion.matches) drawStill(); });
+    reduceMotion.addEventListener('change', run);
+    document.addEventListener('visibilitychange', run);
+})();
+</script>
+
+<script>
 
 const RECAPTCHA_SITE_KEY = '<?php echo $config['site_key']; ?>';
 let recaptchaLoaded = null;
@@ -1058,152 +1197,120 @@ function loadRecaptcha() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Track active code snippets to prevent duplicates
-    let activeSnippets = new Set();
-
     $('.page-loader').addClass('fade-out');
     setTimeout(() => {
         $('.page-loader').remove();
     }, 300);
 
-    // Parallax effect for background and stars
-    $(window).on('scroll', function() {
-        const scrollTop = $(this).scrollTop();
-        $('.parallax-bg').css('transform', `translate(-10%, -10%) translateY(${scrollTop * 0.3}px)`);
-        $('.stars').css('transform', `translateY(${scrollTop * 0.2}px)`);
-    });
+    // Floating emojis and code snippets: an asteroid field drifting up behind
+    // the page. They sit under the content layer, so text and cards always
+    // stay on top. None on reduced motion, none while the tab is hidden, and
+    // no snippets on phones.
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const $floaters = $('.floating-emojis');
+    const emojis = ['💻', '🚀', '⚡', '🔥', '🎯', '🌟', '💡', '🎨', '🔧', '📱'];
+    const codeSnippets = [
+        'brew install rooibos',
+        'npm install braai-tools',
+        'git commit -m "lekker code"',
+        'sudo apt-get install biltong',
+        'console.log("howzit!");',
+        'import { vibe } from "cape-town"',
+        'const isLekker = true;',
+        'composer require boerewors',
+        'docker run --rm ubuntu-za',
+        'ssh user@jozi-server',
+        'curl durban-api.co.za/waves',
+        'echo "Sharp sharp!"',
+        'kubectl apply -f braai.yaml'
+    ];
+    const activeSnippets = new Set();
+    let floatTimers = [];
 
-    // Create twinkling stars
-    function createStars() {
-        const $starsContainer = $('.stars');
-        for (let i = 0; i < 100; i++) {
-            const $star = $('<div>').addClass('star').css({
-                left: Math.random() * 100 + '%',
-                top: Math.random() * 100 + '%',
-                animationDelay: Math.random() * 2 + 's'
-            });
-            $starsContainer.append($star);
-        }
-    }
+    const isNarrow = () => innerWidth < 720;
+    const pick = list => list[Math.floor(Math.random() * list.length)];
+    // A random x (px) that keeps an element of `width` on screen.
+    const randomX = width => 8 + Math.random() * Math.max(0, innerWidth - width - 16);
 
-    // Create floating emojis and code snippets
-    function createFloatingEmoji() {
-        const emojis = ['💻', '🚀', '⚡', '🔥', '🎯', '🌟', '💡', '🎨', '🔧', '📱'];
-        const $emoji = $('<div>')
-            .addClass('emoji')
-            .text(emojis[Math.floor(Math.random() * emojis.length)])
-            .css({
-                left: Math.random() * 100 + '%',
-                animationDuration: (Math.random() * 3 + 4) + 's'
-            });
-
-        $('.floating-emojis').append($emoji);
-
-        setTimeout(() => {
-            $emoji.remove();
-        }, 7000);
-    }
-
-    function createFloatingCodeSnippet() {
-        const codeSnippets = [
-            'brew install rooibos',
-            'npm install braai-tools',
-            'git commit -m "lekker code"',
-            'sudo apt-get install biltong',
-            'console.log("howzit!");',
-            'import { vibe } from "cape-town"',
-            'const isLekker = true;',
-            'composer require boerewors',
-            'docker run --rm ubuntu-za',
-            'ssh user@jozi-server',
-            'curl durban-api.co.za/waves',
-            'echo "Sharp sharp!"',
-            'kubectl apply -f braai.yaml'
-        ];
-
-        // Filter out snippets that are already active
-        const availableSnippets = codeSnippets.filter(snippet => !activeSnippets.has(snippet));
-
-        // If no snippets available, skip this cycle
-        if (availableSnippets.length === 0) {
-            return;
-        }
-
-        const selectedSnippet = availableSnippets[Math.floor(Math.random() * availableSnippets.length)];
-        activeSnippets.add(selectedSnippet);
-
-        const animationDuration = Math.random() * 4 + 6; // 6-10 seconds
-        const $snippet = $('<div>')
-            .addClass('code-snippet')
-            .text(selectedSnippet)
-            .css({
-                left: Math.random() * 70 + '%', // Narrower range so text doesn't get cut off
-                animationDuration: animationDuration + 's',
-                transform: `rotate(${(Math.random() - 0.5) * 10}deg)` // Random angle between -5 and +5 degrees
-            });
-
-        $('.floating-emojis').append($snippet);
-
-        // Remove when animation completes (when it reaches the top)
-        $snippet.on('animationend', function() {
-            activeSnippets.delete(selectedSnippet);
-            $(this).remove();
+    // Rise over `duration` seconds; a negative delay starts it part-way up.
+    function launch($el, duration, progress) {
+        $el.css({
+            '--dur': duration + 's',
+            '--rot': ((Math.random() - 0.5) * 10).toFixed(1) + 'deg',
+            animationDelay: progress ? (-duration * progress) + 's' : ''
         });
+    }
 
-        // Fallback removal in case animationend doesn't fire
-        setTimeout(() => {
-            activeSnippets.delete(selectedSnippet);
+    function spawnEmoji(progress) {
+        const $emoji = $('<div class="emoji">').text(pick(emojis)).css('left', randomX(36) + 'px');
+        launch($emoji, 18 + Math.random() * 8, progress);
+        $emoji.one('animationend', () => $emoji.remove());
+        $floaters.append($emoji);
+    }
+
+    // Rendered width of each snippet, measured once.
+    const snippetWidths = new Map();
+    function snippetWidth(snippet) {
+        if (!snippetWidths.has(snippet)) {
+            const $probe = $('<div class="code-snippet">').text(snippet).css({ visibility: 'hidden', animation: 'none' });
+            $floaters.append($probe);
+            snippetWidths.set(snippet, $probe.outerWidth());
+            $probe.remove();
+        }
+        return snippetWidths.get(snippet);
+    }
+
+    function spawnSnippet(progress) {
+        const available = codeSnippets.filter(snippet => !activeSnippets.has(snippet));
+        if (!available.length) return;
+
+        const snippet = pick(available);
+        const $snippet = $('<div class="code-snippet">').text(snippet).css('left', randomX(snippetWidth(snippet)) + 'px');
+        activeSnippets.add(snippet);
+        $floaters.append($snippet);
+        launch($snippet, 22 + Math.random() * 8, progress);
+        $snippet.one('animationend', () => {
+            activeSnippets.delete(snippet);
             $snippet.remove();
-        }, (animationDuration + 1) * 1000);
+        });
     }
 
-    // Initialize
-    createStars();
-
-    // Create floating emojis and code snippets periodically
-    setInterval(createFloatingEmoji, 1000);
-    setInterval(createFloatingCodeSnippet, 4000);
-
-    // Add interactive sparkle on click and touch
-    function createSparkle(x, y) {
-        const sparkleEmojis = ['✨', '⭐', '💫', '🌟'];
-        const randomSparkle = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
-
-        const $sparkle = $('<div>')
-            .css({
-                position: 'fixed',
-                left: x + 'px',
-                top: y + 'px',
-                pointerEvents: 'none',
-                fontSize: '2rem',
-                zIndex: '1000',
-                animation: 'float 1s ease-out forwards'
-            })
-            .html(randomSparkle);
-
-        $('body').append($sparkle);
-        setTimeout(() => $sparkle.remove(), 1000);
+    function stopFloaters() {
+        floatTimers.forEach(clearInterval);
+        floatTimers = [];
     }
 
-    // Handle both click and touch events
-    $(document).on('click touchstart', function(e) {
-        if ($(e.target).closest('a, button, summary').length) {
+    function startFloaters() {
+        stopFloaters();
+        if (reduceMotion.matches || document.hidden) return;
+
+        const narrow = isNarrow();
+        // Start a few mid-flight so the sky is never empty on arrival.
+        if (!$floaters.children().length) {
+            for (let i = 0; i < (narrow ? 2 : 4); i++) spawnEmoji(0.15 + Math.random() * 0.7);
+            if (!narrow) for (let i = 0; i < 2; i++) spawnSnippet(0.2 + Math.random() * 0.6);
+        }
+        floatTimers.push(setInterval(() => {
+            if ($floaters.children().length < (isNarrow() ? 3 : 8)) spawnEmoji();
+        }, narrow ? 6000 : 3500));
+        if (!narrow) floatTimers.push(setInterval(() => spawnSnippet(), 8000));
+    }
+
+    startFloaters();
+    reduceMotion.addEventListener('change', startFloaters);
+    document.addEventListener('visibilitychange', startFloaters);
+
+    // A sparkle wherever the page is tapped or clicked, away from links and buttons.
+    const sparkles = ['✨', '⭐', '💫', '🌟'];
+    $(document).on('pointerdown', function(e) {
+        if (reduceMotion.matches || $(e.target).closest('a, button, summary').length) {
             return;
         }
-
-        e.preventDefault();
-
-        let x, y;
-        if (e.type === 'touchstart') {
-            const touch = e.originalEvent.touches[0];
-            x = touch.clientX;
-            y = touch.clientY;
-        } else {
-            x = e.clientX;
-            y = e.clientY;
-        }
-
-        createSparkle(x, y);
+        const $sparkle = $('<div class="sparkle" aria-hidden="true">')
+            .text(pick(sparkles))
+            .css({ left: e.clientX + 'px', top: e.clientY + 'px' });
+        $sparkle.one('animationend', () => $sparkle.remove());
+        $('body').append($sparkle);
     });
 
     $('.cta-button').one('pointerenter focusin touchstart', loadRecaptcha);
