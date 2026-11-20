@@ -260,9 +260,15 @@ if ($token !== null) {
         overflow-x: clip;
     }
 
+    /*
+     * Room under the footer, so it can be scrolled up to about a third of
+     * the way up the screen: clear of thumbs and the browser toolbar, and to
+     * wherever people like to read. Never far enough to leave the screen.
+     */
     body {
         position: relative;
         min-height: 100vh;
+        padding-bottom: 30vh;
         font-family: var(--font-body);
         font-size: 1.0625rem;
         line-height: 1.6;
@@ -388,19 +394,26 @@ if ($token !== null) {
     }
 
     /* Layout */
+    /* On screens taller than the page, the content sits in the middle. */
     .wrap {
         position: relative;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100vh;
+        min-height: 100svh;
         max-width: 56rem;
         margin: 0 auto;
         padding: clamp(2.5rem, 9vh, 6rem) 1.25rem 3rem;
         text-align: center;
     }
 
+    /* Anchored to the hero, starting where the page padding starts above it. */
     .glow {
         position: absolute;
         left: 50%;
-        top: 0;
+        top: calc(-1 * clamp(2.5rem, 9vh, 6rem));
         z-index: -1;
         width: min(70rem, 100vw);
         height: 36rem;
@@ -410,6 +423,7 @@ if ($token !== null) {
     }
 
     .hero {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -617,6 +631,7 @@ if ($token !== null) {
 
     /* Questions */
     .faq {
+        width: 100%; /* auto margins in the flex column would otherwise shrink it to its text */
         max-width: 40rem;
         margin: clamp(4rem, 10vh, 6rem) auto 0;
         text-align: left;
@@ -900,6 +915,10 @@ if ($token !== null) {
             padding: 1.5rem 1rem 2.5rem;
         }
 
+        .glow {
+            top: -1.5rem;
+        }
+
         .logo {
             font-size: 3rem;
         }
@@ -1006,8 +1025,8 @@ if ($token !== null) {
 <div class="floating-emojis" aria-hidden="true"></div>
 
 <main class="wrap">
-    <div class="glow" aria-hidden="true"></div>
     <header class="hero">
+        <div class="glow" aria-hidden="true"></div>
         <div class="logo" aria-hidden="true">🚀</div>
         <h1>Lekker Tech</h1>
         <h2 class="subtitle"><span class="subtitle-emoji" aria-hidden="true">💬</span> <span>The South African Tech Slack <br>Where Code Meets Braai</span> <span class="subtitle-emoji" aria-hidden="true">🔥</span></h2>
