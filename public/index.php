@@ -121,57 +121,211 @@ if ($token !== null) {
 <meta property="twitter:description" content="Lekker Tech is a free Slack community for South African developers and tech workers, at home and abroad. Connect over boerewors, bytes, and banter.">
 <meta property="twitter:image" content="https://lekkertech.org.za/lekkertech-preview-twitter.png">
 
+<link rel="preload" href="/fonts/baloo2-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+
 <style>
-    * {
+    /* Self-hosted Google Fonts, Latin subset (OFL; licences in /fonts). */
+    @font-face {
+        font-family: 'Baloo 2';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: swap;
+        src: url(/fonts/baloo2-latin.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+        font-family: 'Figtree';
+        font-style: normal;
+        font-weight: 300 900;
+        font-display: swap;
+        src: url(/fonts/figtree-latin.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+        font-family: 'Figtree';
+        font-style: italic;
+        font-weight: 500;
+        font-display: swap;
+        src: url(/fonts/figtree-italic-latin.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+        font-family: 'JetBrains Mono';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(/fonts/jetbrainsmono-latin.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    /*
+     * Lekker Refresh. One identity in two moods: light mode is today's
+     * purple sky brightened to daytime, dark mode is the same sky at night.
+     * Every colour is a token; dark mode only redefines tokens.
+     */
+    :root {
+        color-scheme: light;
+
+        --font-display: "Baloo 2", "Trebuchet MS", "Arial Rounded MT Bold", system-ui, sans-serif;
+        --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+        --sky-1: #97a3ff;
+        --sky-2: #a690f6;
+        --sky-3: #b88de8;
+        --sky-glow: rgba(255, 255, 255, 0.42);
+        --blob-a: rgba(112, 132, 250, 0.55);
+        --blob-b: rgba(160, 110, 230, 0.5);
+        --ink: #1f1147;
+        --ink-soft: #2e1f63;
+        --ink-faint: #2f2065;
+        --card: rgba(255, 255, 255, 0.5);
+        --card-strong: rgba(255, 255, 255, 0.68);
+        --card-line: rgba(255, 255, 255, 0.75);
+        --hair: rgba(46, 31, 99, 0.2);
+        --title-a: #e8365d;
+        --title-b: #f07800;
+        --title-c: #1f9e5c;
+        --title-d: #0f8fb0;
+        --title-e: #7a4dff;
+        --title-glow: rgba(255, 255, 255, 0.6);
+        --cta-a: #ff6b6b;
+        --cta-b: #ffb547;
+        --cta-ink: #2a0d1f;
+        --cta-shadow: rgba(214, 60, 90, 0.35);
+        --focus: #1f1147;
+        --star: 255, 255, 255;
+        --snippet-bg: rgba(255, 255, 255, 0.5);
+        --snippet-ink: #2f5d3a;
+        --snippet-line: rgba(255, 255, 255, 0.8);
+        --float-alpha: 0.55;
+        --tip-bg: #1f1147;
+        --tip-ink: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: dark;
+
+            --sky-1: #232055;
+            --sky-2: #2c1c4f;
+            --sky-3: #1b1538;
+            --sky-glow: rgba(140, 120, 255, 0.2);
+            --blob-a: rgba(90, 100, 230, 0.32);
+            --blob-b: rgba(150, 70, 170, 0.3);
+            --ink: #f4efff;
+            --ink-soft: #d8cff3;
+            --ink-faint: #b9aedd;
+            --card: rgba(255, 255, 255, 0.06);
+            --card-strong: rgba(255, 255, 255, 0.09);
+            --card-line: rgba(255, 255, 255, 0.12);
+            --hair: rgba(255, 255, 255, 0.1);
+            --title-a: #ff8a8f;
+            --title-b: #ffd36b;
+            --title-c: #7fdc9e;
+            --title-d: #6fd3d0;
+            --title-e: #b59bff;
+            --title-glow: rgba(255, 190, 160, 0.28);
+            --cta-a: #ff7a7a;
+            --cta-b: #ffbf5e;
+            --cta-shadow: rgba(255, 110, 110, 0.25);
+            --focus: #ffd36b;
+            --star: 236, 230, 255;
+            --snippet-bg: rgba(10, 6, 30, 0.55);
+            --snippet-ink: #9fdcaa;
+            --snippet-line: rgba(159, 220, 170, 0.18);
+            --tip-bg: #0f0b24;
+            --tip-ink: #f4efff;
+        }
+    }
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+        overflow-x: clip;
     }
 
     body {
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        overflow-x: hidden;
         position: relative;
+        min-height: 100vh;
+        overflow-x: clip;
+        font-family: var(--font-body);
+        font-size: 1.0625rem;
+        line-height: 1.6;
+        color: var(--ink);
+        background: linear-gradient(160deg, var(--sky-1) 0%, var(--sky-2) 40%, var(--sky-3) 75%, var(--sky-2) 100%);
+        background-color: var(--sky-2);
+        -webkit-font-smoothing: antialiased;
     }
 
-    .parallax-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 120%;
-        height: 120%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-        background-size: 200% 200%;
-        animation: gradientShift 20s ease infinite;
-        z-index: -1;
-        transform: translate(-10%, -10%);
+    /* Sky: two colour glows drifting slowly behind everything. */
+    .sky {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
     }
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    .sky::before,
+    .sky::after {
+        content: "";
+        position: absolute;
+        width: 90vmax;
+        height: 90vmax;
+        border-radius: 50%;
+        will-change: transform, opacity;
+    }
+
+    .sky::before {
+        left: -30vmax;
+        top: -30vmax;
+        background: radial-gradient(closest-side, var(--blob-a), transparent);
+        animation: driftA 38s ease-in-out infinite alternate;
+    }
+
+    .sky::after {
+        right: -35vmax;
+        bottom: -45vmax;
+        background: radial-gradient(closest-side, var(--blob-b), transparent);
+        animation: driftB 46s ease-in-out infinite alternate;
+    }
+
+    @keyframes driftA {
+        0% { transform: translate(0, 0); opacity: 0.7; }
+        100% { transform: translate(28vmax, 18vmax); opacity: 1; }
+    }
+
+    @keyframes driftB {
+        0% { transform: translate(0, 0); opacity: 1; }
+        100% { transform: translate(-26vmax, -22vmax); opacity: 0.6; }
     }
 
     .stars {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
+        inset: 0;
         z-index: 1;
+        pointer-events: none;
     }
 
     .star {
         position: absolute;
         width: 2px;
         height: 2px;
-        background: white;
         border-radius: 50%;
-        animation: twinkle 2s infinite;
+        background: rgb(var(--star));
+        animation: twinkle 4s ease-in-out infinite;
     }
 
     @keyframes twinkle {
@@ -179,159 +333,229 @@ if ($token !== null) {
         50% { opacity: 1; }
     }
 
-    .container {
+    .floating-emojis {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .emoji {
+        position: absolute;
+        font-size: 1.75rem;
+        animation: float 6s infinite linear;
+    }
+
+    .code-snippet {
+        position: absolute;
+        padding: 0.35rem 0.6rem;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        white-space: nowrap;
+        color: var(--snippet-ink);
+        background: var(--snippet-bg);
+        border: 1px solid var(--snippet-line);
+        border-radius: 8px;
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        animation: float 8s linear forwards;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(100vh); opacity: 0; }
+        10% { opacity: var(--float-alpha); }
+        90% { opacity: var(--float-alpha); }
+        100% { transform: translateY(-100px); opacity: 0; }
+    }
+
+    /* Layout */
+    .wrap {
         position: relative;
         z-index: 2;
-        max-width: 800px;
+        max-width: 56rem;
         margin: 0 auto;
-        padding: 2rem;
+        padding: clamp(2.5rem, 9vh, 6rem) 1.25rem 3rem;
         text-align: center;
-        min-height: 100vh;
+    }
+
+    .glow {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        z-index: -1;
+        width: min(70rem, 100vw);
+        height: 36rem;
+        transform: translateX(-50%);
+        background: radial-gradient(50% 50% at 50% 40%, var(--sky-glow), transparent 75%);
+        pointer-events: none;
+    }
+
+    .hero {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        align-items: center;
     }
 
     .logo {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        animation: bounce 2s infinite, glow 3s infinite;
-        text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        display: inline-block;
+        font-size: 4.25rem;
+        line-height: 1;
+        filter: drop-shadow(0 0 18px var(--title-glow));
+        animation: bob 5s ease-in-out infinite;
     }
 
-    @keyframes glow {
-        0%, 100% {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
-        }
-        50% {
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 60px rgba(255, 255, 255, 0.6), 0 0 80px rgba(255, 255, 255, 0.3);
-        }
-    }
-
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
+    @keyframes bob {
+        0%, 100% { transform: translateY(0) rotate(-4deg); }
+        50% { transform: translateY(-10px) rotate(2deg); }
     }
 
     h1 {
-        font-size: 3.5rem;
-        font-weight: bold;
-        background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4);
-        background-size: 400% 400%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: rainbow 3s infinite;
-        margin-bottom: 1rem;
-        text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        margin: 0.6rem 0 0.5rem;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(3.4rem, 10vw, 7rem);
+        line-height: 0.95;
+        letter-spacing: 0.01em;
         text-transform: uppercase;
+        color: var(--title-a);
+        background: linear-gradient(90deg, var(--title-a), var(--title-b), var(--title-c), var(--title-d), var(--title-e), var(--title-a));
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 18px var(--title-glow));
+        animation: shimmer 18s linear infinite;
     }
 
-    @keyframes rainbow {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    @keyframes shimmer {
+        to { background-position: -200% 0; }
     }
 
     .subtitle {
-        font-size: 1.5rem;
-        font-weight: normal;
-        color: #fff;
-        margin-bottom: 2rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        max-width: 30ch;
+        margin: 0 auto 1.1rem;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.2rem, 2.6vw, 1.65rem);
+        line-height: 1.25;
+        color: var(--ink);
+        text-wrap: balance;
     }
 
-    .meme-text {
-        font-size: 1.1rem;
-        color: #fff;
-        margin-bottom: 2rem;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 1.5rem;
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+    .lead {
+        max-width: 38rem;
+        margin: 0 auto 1.75rem;
+        font-size: clamp(1.05rem, 1.6vw, 1.2rem);
         line-height: 1.6;
+        color: var(--ink-soft);
+        text-wrap: pretty;
     }
 
-    .faq {
+    .vibes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        width: 100%;
+        max-width: 54rem;
+        margin: 0 auto 1.75rem;
+        list-style: none;
         text-align: left;
-        margin-top: 2rem;
+        border-top: 1px solid var(--hair);
+        border-bottom: 1px solid var(--hair);
     }
 
-    .faq h2 {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        text-align: center;
+    .vibes li {
+        display: flex;
+        gap: 0.7rem;
+        align-items: flex-start;
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--ink-soft);
+        text-wrap: pretty;
     }
 
-    .faq summary {
-        cursor: pointer;
-        font-weight: bold;
+    .vibes li + li {
+        border-left: 1px solid var(--hair);
     }
 
-    .faq details + details {
-        margin-top: 0.8rem;
+    .vibe-icon {
+        flex: none;
+        font-size: 1.3rem;
+        line-height: 1.1;
     }
 
-    .faq details p {
-        margin-top: 0.4rem;
+    .vibes li > span:last-child {
+        flex: 1;
+        min-width: 0;
     }
 
-    .meme-text p {
-        margin-bottom: 0.8rem;
+    .vibes .quote {
+        font-style: italic;
+        font-weight: 500;
+        color: var(--ink);
     }
 
-    .meme-text p:last-child {
-        margin-bottom: 0;
-    }
-
-    .cta-note {
-        margin-top: 0.75rem;
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.8);
+    .vibes cite {
+        display: block;
+        margin-top: 0.2rem;
+        font-style: normal;
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
     }
 
     .cta-button {
-        display: inline-block;
-        padding: 1rem 2rem;
-        font-size: 1.3rem;
-        font-weight: bold;
-        text-decoration: none;
-        color: white;
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         position: relative;
+        isolation: isolate;
         overflow: hidden;
-    }
-
-    .cta-button:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        min-height: 68px;
+        padding: 0 2.75rem;
+        border-radius: 999px;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.55rem;
+        letter-spacing: 0.01em;
+        color: var(--cta-ink);
+        text-decoration: none;
+        background: linear-gradient(100deg, var(--cta-a), var(--cta-b));
+        box-shadow: 0 14px 34px -10px var(--cta-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+        transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1), box-shadow 0.25s ease;
     }
 
     .cta-button::before {
-        content: '';
+        content: "";
         position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        transition: left 0.5s;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+        transform: translateX(-120%);
+        animation: sheen 6s ease-in-out 1.5s infinite;
     }
 
-    .cta-button:hover::before {
-        left: 100%;
+    @keyframes sheen {
+        0%, 70% { transform: translateX(-120%); }
+        100% { transform: translateX(120%); }
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 20px 40px -12px var(--cta-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .cta-button:active {
+        transform: translateY(0) scale(0.99);
     }
 
     .cta-button.loading {
-        background: linear-gradient(45deg, #888, #666);
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        filter: grayscale(0.6);
+        cursor: progress;
+        transform: none;
     }
 
     .cta-button.loading::before {
@@ -342,33 +566,244 @@ if ($token !== null) {
         display: inline-block;
         width: 20px;
         height: 20px;
-        border: 2px solid rgba(255,255,255,0.3);
+        border: 2px solid currentColor;
+        border-top-color: transparent;
         border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-        margin-right: 10px;
+        animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
 
-    .page-loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .cta-note {
+        margin-top: 0.85rem;
+        font-size: 0.9rem;
+        color: var(--ink-faint);
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 3px;
+        border-radius: 6px;
+    }
+
+    .cta-button:focus-visible {
+        outline-offset: 5px;
+        border-radius: 999px;
+    }
+
+    /* Questions */
+    .faq {
+        max-width: 40rem;
+        margin: clamp(4rem, 10vh, 6rem) auto 0;
+        text-align: left;
+    }
+
+    .faq h2 {
+        margin-bottom: 1rem;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 1.9rem;
+        line-height: 1.1;
+        text-align: center;
+    }
+
+    .faq-list {
+        padding: 0.35rem 0;
+        background: var(--card);
+        border: 1px solid var(--card-line);
+        border-radius: 20px;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+
+    .faq details + details {
+        border-top: 1px solid var(--hair);
+    }
+
+    .faq summary {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 56px;
+        padding: 0.75rem 1.35rem;
+        list-style: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--ink);
+        border-radius: 14px;
+    }
+
+    .faq summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq summary::after {
+        content: "";
+        flex: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1px solid var(--card-line);
+        background: var(--card-strong) no-repeat center;
+        background-image: linear-gradient(currentColor, currentColor), linear-gradient(currentColor, currentColor);
+        background-size: 12px 2px, 2px 12px;
+        transition: transform 0.3s ease;
+    }
+
+    .faq details[open] summary::after {
+        transform: rotate(45deg);
+    }
+
+    .faq summary:hover {
+        background: var(--card);
+    }
+
+    .faq details p {
+        max-width: 34rem;
+        padding: 0 1.35rem 1.1rem;
+        color: var(--ink-soft);
+    }
+
+    .faq a {
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+
+    /* Footer */
+    footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.1rem;
+        margin-top: 3rem;
+    }
+
+    .tech-stack {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        letter-spacing: 0.02em;
+        color: var(--ink-soft);
+    }
+
+    .social-icons {
+        display: flex;
+        flex-wrap: wrap;
         justify-content: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease-out;
+        gap: 0.6rem;
+    }
+
+    .social-icons a {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        color: var(--ink);
+        background: var(--card);
+        border: 1px solid var(--card-line);
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .social-icons svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .social-icons a:hover {
+        transform: translateY(-3px);
+        background: var(--card-strong);
+    }
+
+    .social-icons a:focus-visible {
+        border-radius: 50%;
+    }
+
+    .copyright {
+        position: relative;
+        font-size: 0.88rem;
+        color: var(--ink-soft);
+        text-align: center;
+    }
+
+    .copyright .credit {
+        margin-top: 0.35rem;
+        font-size: 0.8rem;
+        color: var(--ink-faint);
+    }
+
+    .copyright a {
+        display: inline-block;
+        padding: 0.75rem 0.1rem;
+        margin: -0.75rem 0;
+        font-weight: 600;
+        color: inherit;
+    }
+
+    /* The tooltip is anchored to the footer block, so it stays on screen at phone width. */
+    .tooltip button {
+        padding: 0.7rem 0.15rem;
+        margin: -0.7rem 0;
+        font: inherit;
+        font-weight: 600;
+        color: var(--ink);
+        background: none;
+        border: 0;
+        cursor: help;
+        text-decoration: underline dotted 1.5px;
+        text-underline-offset: 4px;
+    }
+
+    .tooltiptext {
+        position: absolute;
+        bottom: calc(100% + 12px);
+        left: 50%;
+        z-index: 10;
+        width: min(320px, calc(100vw - 32px));
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        text-align: left;
+        color: var(--tip-ink);
+        background: var(--tip-bg);
+        box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, 4px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    }
+
+    .tooltip:hover .tooltiptext,
+    .tooltip:focus-within .tooltiptext {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
     }
 
     .grecaptcha-badge {
         z-index: 3;
+    }
+
+    /*
+     * Page loader. Fades as soon as the scripts are ready; the delayed
+     * animation hides it anyway if they never arrive.
+     */
+    .page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(160deg, var(--sky-1) 0%, var(--sky-2) 50%, var(--sky-3) 100%);
+        transition: opacity 0.3s ease-out;
+        animation: loader-out 0.3s ease-out 3s forwards;
     }
 
     .page-loader.fade-out {
@@ -376,340 +811,136 @@ if ($token !== null) {
         pointer-events: none;
     }
 
+    @keyframes loader-out {
+        to { opacity: 0; visibility: hidden; }
+    }
+
     .loader-content {
-        text-align: center;
-        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        color: var(--ink);
     }
 
     .loader-rocket {
         font-size: 4rem;
-        margin-bottom: 1rem;
-        animation: bounce 1s infinite;
+        line-height: 1;
+        filter: drop-shadow(0 0 18px var(--title-glow));
+        animation: bob 1.2s ease-in-out infinite;
     }
 
     .loader-text {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        opacity: 0.9;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.25rem;
     }
 
     .loader-dots {
-        display: inline-block;
+        display: flex;
+        gap: 6px;
     }
 
     .loader-dots span {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
-        background-color: white;
-        margin: 0 3px;
-        animation: dotPulse 1.4s infinite ease-in-out both;
+        background: linear-gradient(100deg, var(--cta-a), var(--cta-b));
+        animation: dotPulse 1.2s ease-in-out infinite both;
     }
 
     .loader-dots span:nth-child(1) { animation-delay: -0.32s; }
     .loader-dots span:nth-child(2) { animation-delay: -0.16s; }
-    .loader-dots span:nth-child(3) { animation-delay: 0s; }
 
     @keyframes dotPulse {
-        0%, 80%, 100% {
-            transform: scale(0.8);
-            opacity: 0.5;
-        }
-        40% {
-            transform: scale(1);
-            opacity: 1;
-        }
+        0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+        40% { transform: scale(1); opacity: 1; }
     }
 
-    .floating-emojis {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    .emoji {
-        position: absolute;
-        font-size: 2rem;
-        animation: float 6s infinite linear;
-        opacity: 0.7;
-    }
-
-    .code-snippet {
-        position: absolute;
-        font-family: 'Courier New', monospace;
-        font-size: 0.8rem;
-        background: rgba(0, 0, 0, 0.6);
-        color: #88cc88;
-        padding: 0.4rem 0.6rem;
-        border-radius: 6px;
-        border: 1px solid rgba(136, 204, 136, 0.2);
-        animation: float 8s linear forwards;
-        opacity: 0.5;
-        white-space: nowrap;
-        backdrop-filter: blur(5px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    @keyframes float {
-        0% {
-            transform: translateY(100vh);
-            opacity: 0;
-        }
-        10% {
-            opacity: 0.7;
-        }
-        90% {
-            opacity: 0.7;
-        }
-        100% {
-            transform: translateY(-100px);
-            opacity: 0;
-        }
-    }
-
-    .tech-stack {
-        margin-top: 2rem;
-        color: #fff;
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-
-    .copyright {
-        margin-top: 1rem;
-        color: #fff;
-        font-size: 0.8rem;
-        opacity: 0.6;
-        transition: opacity 0.3s ease;
-    }
-
-    .copyright:hover {
-        opacity: 1;
-    }
-
-    .tooltip {
-        position: relative;
-        cursor: help;
-        border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 300px;
-        background-color: rgba(0, 0, 0, 0.9);
-        color: #fff;
-        text-align: left;
-        border-radius: 10px;
-        padding: 15px;
-        position: absolute;
-        z-index: 1000;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -150px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 0.85rem;
-        line-height: 1.4;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .hero {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .lead {
-        margin-bottom: 1rem;
-    }
-
-    .vibes {
-        list-style: none;
-    }
-
-    .vibes li + li {
-        margin-top: 0.8rem;
-    }
-
-    .vibes .quote,
-    .vibes cite {
-        font-style: italic;
-    }
-
-    .faq a {
-        color: #fff;
-    }
-
-    .social-icons {
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .social-icons a {
-        display: inline-block;
-        margin: 0 10px;
-        color: #fff;
-        opacity: 0.7;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .social-icons svg {
-        vertical-align: middle;
-    }
-
-    .copyright .credit {
-        margin-top: 0.5rem;
-        font-size: 0.7rem;
-        opacity: 0.6;
-    }
-
-    .copyright .credit a {
-        color: rgba(255, 255, 255, 0.8);
-        text-decoration: none;
-    }
-
-    .tooltip button {
-        font: inherit;
-        color: inherit;
-        background: none;
-        border: 0;
-        padding: 0;
-        cursor: help;
-    }
-
-    .tooltip:focus-within .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .bottom-space {
-        height: 10vh;
-    }
-
-    .social-icons a:hover {
-        opacity: 1 !important;
-        transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.8rem;
-        }
-        .subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 0.8rem;
-        }
-        .container {
-            padding: 1rem;
-            justify-content: flex-start;
-            padding-top: 2rem;
-        }
-
-        .meme-text {
-            font-size: 0.95rem;
-            padding: 1.2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .meme-text .emoji {
-            font-size: 1.1rem;
-        }
-
-        .cta-button {
-            font-size: 1.1rem;
-            padding: 0.8rem 1.5rem;
-        }
-
-        .tech-stack {
-            margin-top: 1.5rem;
-            font-size: 0.8rem;
-        }
-
-        .copyright {
-            margin-top: 2rem;
-            font-size: 0.7rem;
-        }
-
-        .tooltip .tooltiptext {
-            width: 250px;
-            margin-left: -125px;
-            font-size: 0.8rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.6rem;
-        }
-        .subtitle {
-            font-size: 0.95rem;
-            margin-bottom: 1.2rem;
-        }
-        .logo {
-            font-size: 2rem;
-            margin-bottom: 0.6rem;
-        }
-        .container {
-            padding: 0.8rem;
-            justify-content: flex-start;
-            padding-top: 1.5rem;
-        }
-
-        .meme-text {
-            font-size: 0.85rem;
-            padding: 1rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .meme-text .emoji {
+    @media (max-width: 720px) {
+        body {
             font-size: 1rem;
         }
 
+        .wrap {
+            padding: 1.5rem 1rem 2.5rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+        }
+
+        h1 {
+            margin: 0.35rem 0 0.45rem;
+        }
+
+        .subtitle {
+            max-width: none;
+            margin-bottom: 0.8rem;
+            font-size: 1.18rem;
+        }
+
+        .lead {
+            margin-bottom: 1.25rem;
+        }
+
+        .vibes {
+            grid-template-columns: 1fr;
+            margin-bottom: 1.25rem;
+        }
+
+        .vibes li {
+            padding: 0.55rem 0.25rem;
+            font-size: 0.92rem;
+        }
+
+        .vibes li + li {
+            border-left: 0;
+            border-top: 1px solid var(--hair);
+        }
+
         .cta-button {
-            font-size: 1rem;
-            padding: 0.7rem 1.2rem;
+            width: 100%;
+            min-height: 60px;
+            padding: 0 1.25rem;
+            font-size: 1.25rem;
         }
 
-        .tech-stack {
-            margin-top: 1.2rem;
-            font-size: 0.7rem;
+        .faq {
+            margin-top: 3rem;
         }
 
-        .copyright {
-            margin-top: 1.5rem;
-            font-size: 0.65rem;
+        .faq summary {
+            padding: 0.7rem 1rem;
         }
 
-        .tooltip .tooltiptext {
-            width: 200px;
-            margin-left: -100px;
-            font-size: 0.75rem;
+        .faq details p {
+            padding: 0 1rem 1rem;
+        }
+
+        .emoji {
+            font-size: 1.4rem;
+        }
+
+        .floating-emojis {
+            --float-alpha: 0.25;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        .floating-emojis {
+            display: none;
+        }
+
+        .page-loader {
+            display: none;
         }
     }
 </style>
@@ -720,7 +951,7 @@ if ($token !== null) {
 
 <body>
 
-<div class="page-loader">
+<div class="page-loader" aria-hidden="true">
     <div class="loader-content">
         <div class="loader-rocket">🚀</div>
         <div class="loader-text">Loading lekker vibes</div>
@@ -732,21 +963,20 @@ if ($token !== null) {
     </div>
 </div>
 
-<div class="parallax-bg"></div>
-<div class="stars"></div>
-<div class="floating-emojis"></div>
+<div class="sky" aria-hidden="true"></div>
+<div class="stars" aria-hidden="true"></div>
+<div class="floating-emojis" aria-hidden="true"></div>
 
-<main class="container">
+<main class="wrap">
+    <div class="glow" aria-hidden="true"></div>
     <header class="hero">
         <div class="logo" aria-hidden="true">🚀</div>
         <h1>Lekker Tech</h1>
         <h2 class="subtitle"><span aria-hidden="true">💬 </span>The South African Tech Slack Where Code Meets Braai<span aria-hidden="true"> 🔥</span></h2>
 
-        <div class="meme-text lead">
-            <p>A free Slack community for South African developers and tech workers, at home and abroad. A relaxed space to connect, socialise, and support one another.</p>
-        </div>
+        <p class="lead">A free Slack community for South African developers and tech workers, at home and abroad. A relaxed space to connect, socialise, and support one another.</p>
 
-        <ul class="meme-text vibes">
+        <ul class="vibes">
             <li><span class="vibe-icon" aria-hidden="true">💻</span> <span><em class="quote">“It's not a bug, it's a feature.”</em> <cite>Every dev, ever</cite></span></li>
             <li><span class="vibe-icon" aria-hidden="true">🌍</span> <span>South African tech wizards making magic happen</span></li>
             <li><span class="vibe-icon" aria-hidden="true">☕</span> <span>Powered by coffee and good vibes</span></li>
@@ -756,28 +986,30 @@ if ($token !== null) {
         <p class="cta-note">Free to join. A quick reCAPTCHA check, then straight into Slack.</p>
     </header>
 
-    <section class="meme-text faq" aria-labelledby="faq-heading">
+    <section class="faq" aria-labelledby="faq-heading">
         <h2 id="faq-heading">Questions</h2>
-        <details>
-            <summary>What is Lekker Tech?</summary>
-            <p>A free Slack community for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
-        </details>
-        <details>
-            <summary>Who can join?</summary>
-            <p>South African developers and tech workers, whether they live in South Africa or abroad.</p>
-        </details>
-        <details>
-            <summary>How do I join the Slack?</summary>
-            <p>Click "Join the Lekker Squad" above. After a quick reCAPTCHA check you are sent to the Slack invite.</p>
-        </details>
-        <details>
-            <summary>Does it cost anything?</summary>
-            <p>No. Joining is free.</p>
-        </details>
-        <details>
-            <summary>Is the website open source?</summary>
-            <p>Yes. The code is on <a href="https://github.com/lekkertech/website">GitHub</a>.</p>
-        </details>
+        <div class="faq-list">
+            <details>
+                <summary>What is Lekker Tech?</summary>
+                <p>A free Slack community for South African tech workers, wherever they are in the world, to connect, socialise, and support one another.</p>
+            </details>
+            <details>
+                <summary>Who can join?</summary>
+                <p>South African developers and tech workers, whether they live in South Africa or abroad.</p>
+            </details>
+            <details>
+                <summary>How do I join the Slack?</summary>
+                <p>Click "Join the Lekker Squad" above. After a quick reCAPTCHA check you are sent to the Slack invite.</p>
+            </details>
+            <details>
+                <summary>Does it cost anything?</summary>
+                <p>No. Joining is free.</p>
+            </details>
+            <details>
+                <summary>Is the website open source?</summary>
+                <p>Yes. The code is on <a href="https://github.com/lekkertech/website">GitHub</a>.</p>
+            </details>
+        </div>
     </section>
 
     <footer>
@@ -808,7 +1040,6 @@ if ($token !== null) {
     </footer>
 </main>
 
-<div class="bottom-space"></div>
 
 <script>
 
@@ -833,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('.page-loader').addClass('fade-out');
     setTimeout(() => {
         $('.page-loader').remove();
-    }, 500);
+    }, 300);
 
     // Parallax effect for background and stars
     $(window).on('scroll', function() {
